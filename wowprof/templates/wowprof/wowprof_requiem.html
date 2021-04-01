@@ -1,0 +1,325 @@
+{% extends "home/base.html" %}
+{% block title %}WoWProf Alts
+{% endblock %}
+{% load static %}
+{% block content %}
+<div class="price-list">
+    <h2 id="price-list-header"  style="text-align: center">WoW All Alts</h2>
+    <div class="row">
+        <a href="{% url 'wowprof_requiem' %}" class="btn btn-secondary">Home</a>
+        <a href="{% url 'wowprof_home' %}" class="btn btn-secondary">WoWProfHome</a>
+        <form method="post">
+            {% csrf_token %}
+            <input type="submit" id="wowprof-requiem-refresh-button" name="wowprof-requiem-refresh-button" value="Refresh" />
+        </form>
+        <div class="col-12" style="text-align: center">
+            <div class="row" style="margin: 25px 0 25px 0">
+                <div class="col-6" style="text-align: center">
+                    <h2>Leatherworking [Leather]</h2>
+                    <table id="leatherworking-leather-req-alts-table" class="prof-req-alts-table" style="margin:auto; text-align:center">
+                        <colgroup>
+                            <col span="3">
+                            <col span="1" style="background-color:grey">
+                        </colgroup>
+                        <tr>
+                            <th style="width:auto">#</th>
+                            <th style="width:auto">Name</th>
+                            <th style="width:auto">Realm</th>
+                            <th style="width:auto">Class</th>
+                            <th style="width:auto">Rank</th>
+                            <th style="width:auto">Head</th>
+                            <th style="width:auto">Shoulder</th>
+                            <th style="width:auto">Chest</th>
+                            <th style="width:auto">Wrist</th>
+                            <th style="width:auto">Hands</th>
+                            <th style="width:auto">Belt</th>
+                            <th style="width:auto">Legs</th>
+                            <th style="width:auto">Feet</th>
+                        </tr>
+                        {% for a in altData %}
+                            {% if a.altProfession1 == 'Leatherworking' or a.altProfession2 == 'Leatherworking' %}
+                            <tr>
+                                <td>{{ a.index }}</td>
+                                <td>{{ a.name }}</td>
+                                <td>{{ a.realm }}</td>
+                                <td>{{ a.altClass }}</td>
+                                {% if a.rank == 4 %}
+                                    <td>Team Fire</td>
+                                {% elif a.rank == 5 %}
+                                    <td>Team Liquid</td>
+                                {% elif a.rank == 1 %}
+                                    <td>Officer</td>
+                                {% elif a.rank == 0 %}
+                                    <td>Guild Master</td>
+                                {% elif a.rank == 6 %}
+                                    <td>Trialist</td>
+                                {% endif %}
+                                <td>{{ a.leatherRank.0 }}</td>
+                                <td>{{ a.leatherRank.1 }}</td>
+                                <td>{{ a.leatherRank.2 }}</td>
+                                <td>{{ a.leatherRank.3 }}</td>
+                                <td>{{ a.leatherRank.4 }}</td>
+                                <td>{{ a.leatherRank.5 }}</td>
+                                <td>{{ a.leatherRank.6 }}</td>
+                                <td>{{ a.leatherRank.7 }}</td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </table>
+                </div>
+                <div class="col-6" style="text-align: center">
+                    <h2>Leatherworking [Mail]</h2>
+                    <table id="leatherworking-mail-req-alts-table" class="prof-req-alts-table" style="margin:auto; text-align:center">
+                        <colgroup>
+                            <col span="3">
+                            <col span="1" style="background-color:grey">
+                        </colgroup>
+                        <tr>
+                            <th style="width:auto">#</th>
+                            <th style="width:auto">Name</th>
+                            <th style="width:auto">Realm</th>
+                            <th style="width:auto">Class</th>
+                            <th style="width:auto">Rank</th>
+                            <th style="width:auto">Head</th>
+                            <th style="width:auto">Shoulder</th>
+                            <th style="width:auto">Chest</th>
+                            <th style="width:auto">Wrist</th>
+                            <th style="width:auto">Hands</th>
+                            <th style="width:auto">Belt</th>
+                            <th style="width:auto">Legs</th>
+                            <th style="width:auto">Feet</th>
+                        </tr>
+                        {% for a in altData %}
+                            {% if a.altProfession1 == 'Leatherworking' or a.altProfession2 == 'Leatherworking' %}
+                            <tr>
+                                <td>{{ a.index }}</td>
+                                <td>{{ a.name }}</td>
+                                <td>{{ a.realm }}</td>
+                                <td>{{ a.altClass }}</td>
+                                {% if a.rank == 4 %}
+                                    <td>Team Fire</td>
+                                {% elif a.rank == 5 %}
+                                    <td>Team Liquid</td>
+                                {% elif a.rank == 1 %}
+                                    <td>Officer</td>
+                                {% elif a.rank == 0 %}
+                                    <td>Guild Master</td>
+                                {% elif a.rank == 6 %}
+                                    <td>Trialist</td>
+                                {% endif %}
+                                <td>{{ a.mailRank.0 }}</td>
+                                <td>{{ a.mailRank.1 }}</td>
+                                <td>{{ a.mailRank.2 }}</td>
+                                <td>{{ a.mailRank.3 }}</td>
+                                <td>{{ a.mailRank.4 }}</td>
+                                <td>{{ a.mailRank.5 }}</td>
+                                <td>{{ a.mailRank.6 }}</td>
+                                <td>{{ a.mailRank.7 }}</td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+            <div class="row" style="margin: 25px 0 25px 0">
+                <div class="col-6" style="text-align: center">
+                    <h2>Tailoring [Cloth]</h2>
+                    <table id="tailoring-req-alts-table" class="prof-req-alts-table" style="margin:auto; text-align:center">
+                        <colgroup>
+                            <col span="3">
+                            <col span="1" style="background-color:grey">
+                        </colgroup>
+                        <tr>
+                            <th style="width:auto">#</th>
+                            <th style="width:auto">Name</th>
+                            <th style="width:auto">Realm</th>
+                            <th style="width:auto">Class</th>
+                            <th style="width:auto">Rank</th>
+                            <th style="width:auto">Head</th>
+                            <th style="width:auto">Shoulder</th>
+                            <th style="width:auto">Back</th>
+                            <th style="width:auto">Chest</th>
+                            <th style="width:auto">Wrist</th>
+                            <th style="width:auto">Hands</th>
+                            <th style="width:auto">Belt</th>
+                            <th style="width:auto">Legs</th>
+                            <th style="width:auto">Feet</th>
+                        </tr>
+                        {% for a in altData %}
+                            {% if a.altProfession1 == 'Tailoring' or a.altProfession2 == 'Tailoring' %}
+                            <tr>
+                                <td>{{ a.index }}</td>
+                                <td>{{ a.name }}</td>
+                                <td>{{ a.realm }}</td>
+                                <td>{{ a.altClass }}</td>
+                                {% if a.rank == 4 %}
+                                    <td>Team Fire</td>
+                                {% elif a.rank == 5 %}
+                                    <td>Team Liquid</td>
+                                {% elif a.rank == 1 %}
+                                    <td>Officer</td>
+                                {% elif a.rank == 0 %}
+                                    <td>Guild Master</td>
+                                {% elif a.rank == 6 %}
+                                    <td>Trialist</td>
+                                {% endif %}
+                                <td>{{ a.clothRank.0 }}</td>
+                                <td>{{ a.clothRank.1 }}</td>
+                                <td>{{ a.clothRank.2 }}</td>
+                                <td>{{ a.clothRank.3 }}</td>
+                                <td>{{ a.clothRank.4 }}</td>
+                                <td>{{ a.clothRank.5 }}</td>
+                                <td>{{ a.clothRank.6 }}</td>
+                                <td>{{ a.clothRank.7 }}</td>
+                                <td>{{ a.clothRank.8 }}</td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </table>
+                </div>
+                <div class="col-6" style="text-align: center">
+                    <h2>Blacksmithing [Plate]</h2>
+                    <table id="blacksmithing-req-alts-table" class="prof-req-alts-table" style="margin:auto; text-align:center">
+                        <colgroup>
+                            <col span="3">
+                            <col span="1" style="background-color:grey">
+                        </colgroup>
+                        <tr>
+                            <th style="width:auto">#</th>
+                            <th style="width:auto">Name</th>
+                            <th style="width:auto">Realm</th>
+                            <th style="width:auto">Class</th>
+                            <th style="width:auto">Rank</th>
+                            <th style="width:auto">Head</th>
+                            <th style="width:auto">Shoulder</th>
+                            <th style="width:auto">Chest</th>
+                            <th style="width:auto">Wrist</th>
+                            <th style="width:auto">Hands</th>
+                            <th style="width:auto">Belt</th>
+                            <th style="width:auto">Legs</th>
+                            <th style="width:auto">Feet</th>
+                        </tr>
+                        {% for a in altData %}
+                            {% if a.altProfession1 == 'Blacksmithing' or a.altProfession2 == 'Blacksmithing' %}
+                            <tr>
+                                <td>{{ a.index }}</td>
+                                <td>{{ a.name }}</td>
+                                <td>{{ a.realm }}</td>
+                                <td>{{ a.altClass }}</td>
+                                {% if a.rank == 4 %}
+                                    <td>Team Fire</td>
+                                {% elif a.rank == 5 %}
+                                    <td>Team Liquid</td>
+                                {% elif a.rank == 1 %}
+                                    <td>Officer</td>
+                                {% elif a.rank == 0 %}
+                                    <td>Guild Master</td>
+                                {% elif a.rank == 6 %}
+                                    <td>Trialist</td>
+                                {% endif %}
+                                <td>{{ a.plateRank.0 }}</td>
+                                <td>{{ a.plateRank.1 }}</td>
+                                <td>{{ a.plateRank.2 }}</td>
+                                <td>{{ a.plateRank.3 }}</td>
+                                <td>{{ a.plateRank.4 }}</td>
+                                <td>{{ a.plateRank.5 }}</td>
+                                <td>{{ a.plateRank.6 }}</td>
+                                <td>{{ a.plateRank.7 }}</td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+            <div class="row" style="margin: 25px 0 25px 0">
+                <div class="col-12" style="text-align: center">
+                    <h2>Jewelcrafting [Misc]</h2>
+                    <table id="jewelcrafting-req-alts-table" class="prof-req-alts-table" style="margin:auto; text-align:center">
+                        <colgroup>
+                            <col span="3">
+                            <col span="3" style="background-color:grey">
+                        </colgroup>
+                        <tr>
+                            <th style="width:auto">#</th>
+                            <th style="width:auto">Name</th>
+                            <th style="width:auto">Realm</th>
+                            <th style="width:auto">Class</th>
+                            <th style="width:auto">Rank</th>
+                            <th style="width:auto">Neck</th>
+                            <th style="width:auto">Ring</th>
+                        </tr>
+                        {% for a in altData %}
+                            {% if a.altProfession1 == 'Jewelcrafting' or a.altProfession2 == 'Jewelcrafting' %}
+                            <tr>
+                                <td>{{ a.index }}</td>
+                                <td>{{ a.name }}</td>
+                                <td>{{ a.realm }}</td>
+                                <td>{{ a.altClass }}</td>
+                                {% if a.rank == 4 %}
+                                    <td>Team Fire</td>
+                                {% elif a.rank == 5 %}
+                                    <td>Team Liquid</td>
+                                {% elif a.rank == 1 %}
+                                    <td>Officer</td>
+                                {% elif a.rank == 0 %}
+                                    <td>Guild Master</td>
+                                {% elif a.rank == 6 %}
+                                    <td>Trialist</td>
+                                {% endif %}
+                                <td>{{ a.miscRank.0 }}</td>
+                                <td>{{ a.miscRank.1 }}</td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </table>
+                    <h2>General</h2>
+                    <table id="req-alts-table" style="margin:auto; text-align:center">
+                        <colgroup>
+                            <col span="3">
+                            <col span="3" style="background-color:grey">
+                        </colgroup>
+                        <tr>
+                            <th style="width:auto">#</th>
+                            <th onclick="sortTableReq(1)" style="width:auto">Name <i class="fas fa-sort"></i></th>
+                            <th onclick="sortTableReq(2)" style="width:auto">Realm <i class="fas fa-sort"></i></th>
+                            <th onclick="sortTableReq(3)" style="width:auto">Class <i class="fas fa-sort"></i></th>
+                            <th onclick="sortTableReq(4)" style="width:auto">Rank <i class="fas fa-sort"></i></th>
+                            <th onclick="sortTableReq(5)" style="width:auto">Prof1 <i class="fas fa-sort"></i></th>
+                            <th onclick="sortTableReq(6)" style="width:auto">Prof2 <i class="fas fa-sort"></i></th>
+                        </tr>
+                        {% for a in altData %}
+                        <tr>
+                            <td>{{ a.index }}</td>
+                            <td>{{ a.name }}</td>
+                            <td>{{ a.realm }}</td>
+                            <td>{{ a.altClass }}</td>
+                            {% if a.rank == 4 %}
+                                <td>Team Fire</td>
+                            {% elif a.rank == 5 %}
+                                <td>Team Liquid</td>
+                            {% elif a.rank == 1 %}
+                                <td>Officer</td>
+                            {% elif a.rank == 0 %}
+                                <td>Guild Master</td>
+                            {% elif a.rank == 6 %}
+                                <td>Trialist</td>
+                            {% endif %}
+                            {% if a.altProfession1 == 'Missing' %}
+                                <td><a>None</a></td>
+                            {% else %}
+                                <td>{{ a.altProfession1 }}</td>
+                            {% endif %}
+                            {% if a.altProfession2 == 'Missing' %}
+                                <td><a>None</a></td>
+                            {% else %}
+                                <td>{{ a.altProfession2 }}</td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends "home/base.html" %}
+{% block title %}WoWProf Alts
+{% endblock %}
+{% load static %}
+{% block content %}
+<div class="price-list">
+    <h2 id="price-list-header"  style="text-align: center">WoW All Alts</h2>
+    <div class="row">
+        <a href="{% url 'wowprof_home' %}" class="btn btn-secondary">WoWProfHome</a>
+        <a href="{% url 'wowprof_alts' %}" class="btn btn-secondary">Home</a>
+        <form method="post">
+            {% csrf_token %}
+            <input type="submit" id="wowprof-alts-refresh-button" name="wowprof-alts-refresh-button" value="Refresh" />
+        </form>
+        <form method="post">
+            {% csrf_token %}
+            <input type="submit" id="wowprof-alts-scan-professions-button" name="wowprof-alts-scan-professions-button" value="Scan Professions" />
+        </form>
+        <form method="post">
+            {% csrf_token %}
+            <input type="submit" id="wowprof-alts-scan-achievements-button" name="wowprof-alts-scan-achievements-button" value="Scan Achievements" />
+        </form>
+        <form method="post">
+            {% csrf_token %}
+            <input type="submit" id="wowprof-alts-scan-quest-completed-button" name="wowprof-alts-scan-quest-completed-button" value="Scan Quests" />
+        </form>
+        <div class="col-12" style="text-align: center">
+            <table id="alts-table" style="margin:auto; text-align:center">
+                <colgroup>
+                    <col span="5">
+                    <col span="5" style="background-color:grey">
+                </colgroup>
+                <tr>
+                    <th style="width:auto">#</th>
+                    <th onclick="sortTableSpecial(1)"><img src="{% static 'wowprof/images/horde_alliance.png' %}" alt="Alliance and Horde faction logos" style="width:60px;height:30px"> <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(2)" style="width:auto">Level <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(3)" style="width:auto">Name <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(4)" style="width:auto">Realm <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(5)" style="width:auto">Class <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(6)" style="width:auto">Mount <i class="fas fa-sort"></th>
+                    <th onclick="sortTable(7)" style="width:auto">Garrison <i class="fas fa-sort"></th>
+                    <th style="width:auto">MT</th>
+                    <th onclick="sortTable(8)" style="width:auto">Prof1 <i class="fas fa-sort"></i></th>
+                    <th onclick="sortTable(9)" style="width:auto">Prof2 <i class="fas fa-sort"></i></th>
+                    <th style="width:auto">More</th>
+                </tr>
+                {% for a in altData %}
+                <tr>
+                    <td>{{ a.index }}</td>
+                    {% if a.faction == 'Alliance' %}
+                        <td><img src="{% static 'wowprof/images/alliance.png' %}" alt="Alliance logo" style="width:30px;height:30px"></td>
+                    {% else %}
+                        <td><img src="{% static 'wowprof/images/horde.png' %}" alt="Horde logo" style="width:30px;height:30px"></td>
+                    {% endif %}
+                    <td>{{ a.level }}</td>
+                    <td>{{ a.name }}</td>
+                    <td>{{ a.realm }}</td>
+                    <td>{{ a.altClass }}</td>
+                    {% if a.mount == 4 %}
+                        <td>4- Fast Flying</td>
+                    {% elif a.mount == 3 %}
+                        <td>3- Flying</td>
+                    {% elif a.mount == 2 %}
+                        <td>2- Fast Ground</td>
+                    {% elif a.mount == 1 %}
+                        <td>1- Ground</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                    {% if a.garrison == 2 %}
+                        <td>Level 3</td>
+                    {% elif a.garrison == 1 %}
+                        <td>Level 2</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                    {% if a.garrison == 2 and a.faction == 'Horde' %}
+                        <td>N/A</td>
+                    {% elif a.garrison == 2 and a.mt == 1 %}
+                        <td>Y</td>
+                    {% elif a.garrison == 2 and a.mt == 0 %}
+                        <td>N</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                    {% if a.altProfession1 == 'Missing' %}
+                        <td><a>None</a></td>
+                    {% else %}
+                        <td><a href="{% url 'wowprof_alts_profession' name=a.nameSlug realm=a.realmSlug profession=a.altProfession1Slug %}">{{ a.altProfession1 }}</a></td>
+                    {% endif %}
+                    {% if a.altProfession2 == 'Missing' %}
+                        <td><a>None</a></td>
+                    {% else %}
+                        <td><a href="{% url 'wowprof_alts_profession' name=a.nameSlug realm=a.realmSlug profession=a.altProfession2Slug %}">{{ a.altProfession2 }}</a></td>
+                    {% endif %}
+                        <td><a href="{% url 'wowprof_alts_more' name=a.nameSlug realm=a.realmSlug %}"><button type="button">>></button></a></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

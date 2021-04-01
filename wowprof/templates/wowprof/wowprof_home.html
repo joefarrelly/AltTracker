@@ -1,0 +1,22 @@
+{% extends "home/base.html" %}
+{% block title %}WoWProf Home
+{% endblock %}
+{% block content %}
+<div class="price-list">
+    <h2 id="price-list-header"  style="text-align: center">WoW Professions Home</h2>
+    <div class="row">
+        <div class="col-4" style="text-align: center">
+            <a href="{% url 'wowprof_alts' %}" class="btn btn-secondary">Home</a>
+        </div>
+        <div class="col-4" style="text-align: center">
+            <a href="{% url 'wowprof_requiem' %}" class="btn btn-secondary">Requiem</a>
+        </div>
+        <div class="col-4" style="text-align: center">
+            <form action="" method="post">
+                {% csrf_token %}
+                <input type="submit" id="wowprof-home-delete-button" name="wowprof-home-delete-button" value="DELETE" />
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
