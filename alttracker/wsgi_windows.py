@@ -1,4 +1,4 @@
-activate_this = 'C:/mysite/venv/Scripts/activate_this.py'
+activate_this = 'C:/alttracker/venv/Scripts/activate_this.py'
 # execfile(activate_this, dict(__file__=activate_this))
 exec(open(activate_this).read(),dict(__file__=activate_this))
 
@@ -7,17 +7,17 @@ import sys
 import site
 
 # Add the site-packages of the chosen virtualenv to work with
-site.addsitedir('C:/mysite/venv/Lib/site-packages')
+site.addsitedir('C:/alttracker/venv/Lib/site-packages')
 
 
 
 
 # Add the app's directory to the PYTHONPATH
-sys.path.append('C:/mysite')
-sys.path.append('C:/mysite/mysite')
+sys.path.append('C:/alttracker')
+sys.path.append('C:/alttracker/alttracker')
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'mysite.settings'
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
+os.environ['DJANGO_SETTINGS_MODULE'] = 'alttracker.settings'
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "alttracker.settings")
 
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
