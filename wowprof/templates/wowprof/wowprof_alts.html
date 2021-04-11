@@ -24,6 +24,10 @@
             {% csrf_token %}
             <input type="submit" id="wowprof-alts-scan-quest-completed-button" name="wowprof-alts-scan-quest-completed-button" value="Scan Quests" />
         </form>
+        <form method="post">
+            {% csrf_token %}
+            <input type="submit" id="wowprof-alts-scan-media-button" name="wowprof-alts-scan-media-button" value="Scan Media" />
+        </form>
         <div class="col-12" style="text-align: center">
             <table id="alts-table" style="margin:auto; text-align:center">
                 <colgroup>

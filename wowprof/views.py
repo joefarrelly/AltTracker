@@ -249,6 +249,59 @@ def wowProfAlts(request):
 				#temptemp.append(realm)
 				#temptemp.append(y.status_code)
 			#return HttpResponse(temptemp)
+		if 'wowprof-alts-scan-media-button' in request.POST:
+			clientToken=getToken(BLIZZ_CLIENT,BLIZZ_SECRET)
+			anObj={'access_token':clientToken,'namespace':'profile-eu','locale':'en_US'}
+			if 'altId' in request.session:
+				for alt in request.session['altId']:
+					tempInstance=get_object_or_404(Alt,altId=alt)
+					name=tempInstance.altName
+					tempRealm=tempInstance.altRealm
+					realm=tempRealm.replace('\'','')
+					url='https://eu.api.blizzard.com/profile/wow/character/'+realm.lower()+'/'+name.lower()+'/character-media'
+					y=requests.get(url,params=anObj)
+					if y.status_code==200:
+						if 'assets' in y.json():
+							mediaData=y.json()['assets']
+							# print(mediaData)
+							# mediaJSON=json.loads(mediaData)
+							# print(mediaJSON)
+							for i in mediaData:
+								if i['key'] == 'avatar':
+									avatar = i['value']
+								elif i['key'] == 'inset':
+									inset = i['value']
+								elif i['key'] == 'main':
+									main = i['value']
+								elif i['key'] == 'main-raw':
+									mainRaw = i['value']
+							print(avatar)
+							print(inset)
+							print(main)
+							print(mainRaw)
+							# for med in mediaData:
+							# 	print(med)
+						if AltMedia.objects.filter(alt=tempInstance).exists():
+							m=get_object_or_404(AltMedia,alt=tempInstance)
+							m.avatar=avatar
+							m.inset=inset
+							m.main=main
+							m.mainRaw=mainRaw
+							m.altMediaExpiryDate=timezone.now()+datetime.timedelta(days=30)
+							m.save()
+						else:
+							a=AltMedia.objects.create(
+								alt=tempInstance,
+								avatar=avatar,
+								inset=inset,
+								main=main,
+								mainRaw=mainRaw,
+								altMediaExpiryDate=timezone.now()+datetime.timedelta(days=30),
+							)
+						print(tempInstance.altName)
+
+
+			
 	altData=[]
 	allAlts=Alt.objects.all()
 	altProf=AltProfession.objects.all()
@@ -412,8 +465,9 @@ def wowProfAltsProfession(request,name,realm,profession):
 def wowProfAltsMoreDetails(request,name,realm):
 	tempInstance=get_object_or_404(Alt,altName=name,altRealm=realm)
 	tempAlt=tempInstance.altId
-	tempInstance2=get_object_or_404(AltAchievement,alt=tempAlt)
-	tempData = tempInstance2.achievementData
+	tempInstance2=get_object_or_404(AltMedia,alt=tempAlt)
+	# tempData = tempInstance2.main
+	tempData = tempInstance2.mainRaw
 	return render(request, "wowprof/wowprof_alts_more.html",{'data':tempData})
 #def calcHome(request):
 #	return render(

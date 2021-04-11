@@ -6,8 +6,8 @@
 <div class="price-list">
     <h2 id="price-list-header"  style="text-align: center">WoW All Alts</h2>
     <div class="row">
-        <a href="{% url 'wowprof_requiem' %}" class="btn btn-secondary">Home</a>
         <a href="{% url 'wowprof_home' %}" class="btn btn-secondary">WoWProfHome</a>
+        <a href="{% url 'wowprof_requiem' %}" class="btn btn-secondary">Home</a>
         <form method="post">
             {% csrf_token %}
             <input type="submit" id="wowprof-requiem-refresh-button" name="wowprof-requiem-refresh-button" value="Refresh" />

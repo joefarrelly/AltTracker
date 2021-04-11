@@ -91,6 +91,14 @@ class AltQuestCompleted(models.Model):
 	altQuestCompletedExpiryDate=models.DateTimeField()
 	questCompletedData=models.JSONField()
 
+class AltMedia(models.Model):
+	alt=models.OneToOneField(Alt,on_delete=models.CASCADE,primary_key=True)
+	altMediaExpiryDate=models.DateTimeField()
+	avatar=models.CharField(max_length=100)
+	inset=models.CharField(max_length=100)
+	main=models.CharField(max_length=100)
+	mainRaw=models.CharField(max_length=100)
+
 class Requiem(models.Model):
 	# reqId = models.PositiveIntegerField(primary_key=True)
 	alt=models.OneToOneField(Alt,on_delete=models.CASCADE,primary_key=True)
