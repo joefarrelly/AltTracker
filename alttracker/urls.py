@@ -19,7 +19,7 @@ from django.urls import include, path
 from . import views
 
 urlpatterns = [
-	path('', views.home,name='home'),
-    path('wowprof/',include('wowprof.urls')),
+    path('', views.home, name='home'),
+    path('wowprof/', include('wowprof.urls')),
     path('admin/', admin.site.urls),
 ]

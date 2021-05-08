@@ -30,13 +30,13 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost',env("HOST_IP"),'127.0.0.1','192.168.1.12']
+ALLOWED_HOSTS = ['localhost', env("HOST_IP"), '127.0.0.1', '192.168.1.12']
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    #'wowprof.apps.WowprofConfig',
+    # 'wowprof.apps.WowprofConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -132,9 +132,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-#STATICFILES_DIR = [os.path.join(BASE_DIR, 'static'),]
+# STATICFILES_DIR = [os.path.join(BASE_DIR, 'static'),]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-#print ("base dir path", BASE_DIR)
-#print ("static url", STATIC_URL)
-#print ("static root", STATIC_ROOT)
+# print ("base dir path", BASE_DIR)
+# print ("static url", STATIC_URL)
+# print ("static root", STATIC_ROOT)

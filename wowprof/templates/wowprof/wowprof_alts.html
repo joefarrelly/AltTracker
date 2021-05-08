@@ -10,7 +10,7 @@
         <a href="{% url 'wowprof_alts' %}" class="btn btn-secondary">Home</a>
         <form method="post">
             {% csrf_token %}
-            <input type="submit" id="wowprof-alts-refresh-button" name="wowprof-alts-refresh-button" value="Refresh" />
+            <input type="submit" id="wowprof-alts-refresh-button" name="wowprof-alts-refresh-button" value="Sync Characters" />
         </form>
         <form method="post">
             {% csrf_token %}
@@ -27,6 +27,10 @@
         <form method="post">
             {% csrf_token %}
             <input type="submit" id="wowprof-alts-scan-media-button" name="wowprof-alts-scan-media-button" value="Scan Media" />
+        </form>
+        <form method="post">
+            {% csrf_token %}
+            <input type="submit" id="wowprof-alts-refresh-data-button" name="wowprof-alts-refresh-data-button" value="Refresh Data" />
         </form>
         <div class="col-12" style="text-align: center">
             <table id="alts-table" style="margin:auto; text-align:center">
