@@ -176,150 +176,150 @@ def wowProfAlts(request):
                     # print(urls)
                     getAltData(((temp_alt.altName).replace('\'', '')).lower(), (temp_alt.altRealm).lower(), temp_alt)
 
-        if 'wowprof-alts-scan-professions-button' in request.POST:
-            print("One")
-            temptemp = []
-            clientToken = getToken(BLIZZ_CLIENT, BLIZZ_SECRET)
-            anObj = {'access_token': clientToken, 'namespace': 'profile-eu', 'locale': 'en_US'}
-            j = Alt.objects.all()
-            for i in j:
-                print("Two")
-                name = i.altName
-                tempRealm = i.altRealm
-                realm = tempRealm.replace('\'', '')
-                url = 'https://eu.api.blizzard.com/profile/wow/character/' + realm.lower() + '/' + name.lower() + '/professions'
-                y = requests.get(url, params=anObj)
-                if y.status_code == 200:
-                    profData = y.json()
-                    AltProfession.objects.filter(alt=i).delete()
-                    print(AltProfession.objects.filter(alt=i))
-                    if 'primaries' in profData:
-                        # temptemp.append("YES")
-                        test3 = y.json()['primaries']
-                        for key in test3:
-                            print("Three")
-                            professionName = key['profession']['name']
-                            # testThing = altData
-                            # return HttpResponse(testThing)
-                            # if not AltProfession.objects.filter(alt=i,professionName=professionName).exists():
-                            p = AltProfession.objects.create(
-                                alt=i,
-                                professionName=professionName,
-                                altProfessionExpiryDate=timezone.now() + datetime.timedelta(days=30),
-                                professionData=(key['tiers'])
-                            )
-                        print(AltProfession.objects.filter(alt=i))
-        if 'wowprof-alts-scan-achievements-button' in request.POST:
-            clientToken = getToken(BLIZZ_CLIENT, BLIZZ_SECRET)
-            anObj = {'access_token': clientToken, 'namespace': 'profile-eu', 'locale': 'en_US'}
-            # page=requests.get("http://127.0.0.1:8000/wowprof/alts/")
-            if 'altId' in request.session:
-                for alt in request.session['altId']:
-                    tempInstance = get_object_or_404(Alt, altId=alt)
-                    name = tempInstance.altName
-                    # nameSlug=name.lower()
-                    tempRealm = tempInstance.altRealm
-                    realm = tempRealm.replace('\'', '')
-                    # realmSlug=realm.lower()
-                    url = 'https://eu.api.blizzard.com/profile/wow/character/' + realm.lower() + '/' + name.lower() + '/achievements'
-                    y = requests.get(url, params=anObj)
-                    if y.status_code == 200:
-                        achData = y.json()
-                        if AltAchievement.objects.filter(alt=tempInstance).exists():
-                            q = get_object_or_404(AltAchievement, alt=tempInstance)
-                            q.achievementData = achData['achievements']
-                            q.altAchievementExpiryDate = timezone.now() + datetime.timedelta(days=30)
-                            q.save()
-                        else:
-                            a = AltAchievement.objects.create(
-                                alt=tempInstance,
-                                achievementData=achData['achievements'],
-                                altAchievementExpiryDate=timezone.now() + datetime.timedelta(days=30),
-                            )
-                        print(tempInstance.altName)
-                    else:
-                        print(alt)
-        if 'wowprof-alts-scan-quest-completed-button' in request.POST:
-            clientToken = getToken(BLIZZ_CLIENT, BLIZZ_SECRET)
-            anObj = {'access_token': clientToken, 'namespace': 'profile-eu', 'locale': 'en_US'}
-            if 'altId' in request.session:
-                for alt in request.session['altId']:
-                    tempInstance = get_object_or_404(Alt, altId=alt)
-                    name = tempInstance.altName
-                    tempRealm = tempInstance.altRealm
-                    realm = tempRealm.replace('\'', '')
-                    url = 'https://eu.api.blizzard.com/profile/wow/character/' + realm.lower() + '/' + name.lower() + '/quests/completed'
-                    y = requests.get(url, params=anObj)
-                    if y.status_code == 200:
-                        questData = y.json()
-                        if AltQuestCompleted.objects.filter(alt=tempInstance).exists():
-                            q = get_object_or_404(AltQuestCompleted, alt=tempInstance)
-                            q.questCompletedData = questData['quests']
-                            q.altQuestCompletedExpiryDate = timezone.now() + datetime.timedelta(days=30)
-                            q.save()
-                        else:
-                            a = AltQuestCompleted.objects.create(
-                                alt=tempInstance,
-                                questCompletedData=questData['quests'],
-                                altQuestCompletedExpiryDate=timezone.now() + datetime.timedelta(days=30),
-                            )
-                        print(tempInstance.altName)
-                    # print(y.json())
-            # return render(request, "wowprof/wowprof_alts.html")
-                # temptemp.append(name)
-                # temptemp.append(realm)
-                # temptemp.append(y.status_code)
-            # return HttpResponse(temptemp)
-        if 'wowprof-alts-scan-media-button' in request.POST:
-            clientToken = getToken(BLIZZ_CLIENT, BLIZZ_SECRET)
-            anObj = {'access_token': clientToken, 'namespace': 'profile-eu', 'locale': 'en_US'}
-            if 'altId' in request.session:
-                for alt in request.session['altId']:
-                    tempInstance = get_object_or_404(Alt, altId=alt)
-                    name = tempInstance.altName
-                    tempRealm = tempInstance.altRealm
-                    realm = tempRealm.replace('\'', '')
-                    url = 'https://eu.api.blizzard.com/profile/wow/character/' + realm.lower() + '/' + name.lower() + '/character-media'
-                    y = requests.get(url, params=anObj)
-                    if y.status_code == 200:
-                        if 'assets' in y.json():
-                            mediaData = y.json()['assets']
-                            # print(mediaData)
-                            # mediaJSON=json.loads(mediaData)
-                            # print(mediaJSON)
-                            for i in mediaData:
-                                if i['key'] == 'avatar':
-                                    avatar = i['value']
-                                elif i['key'] == 'inset':
-                                    inset = i['value']
-                                elif i['key'] == 'main':
-                                    main = i['value']
-                                elif i['key'] == 'main-raw':
-                                    mainRaw = i['value']
-                            print(avatar)
-                            print(inset)
-                            print(main)
-                            print(mainRaw)
-                            # for med in mediaData:
-                            #   print(med)
-                        if AltMedia.objects.filter(alt=tempInstance).exists():
-                            m = get_object_or_404(AltMedia, alt=tempInstance)
-                            m.avatar = avatar
-                            m.inset = inset
-                            m.main = main
-                            m.mainRaw = mainRaw
-                            m.altMediaExpiryDate = timezone.now() + datetime.timedelta(days=30)
-                            m.save()
-                        else:
-                            a = AltMedia.objects.create(
-                                alt=tempInstance,
-                                avatar=avatar,
-                                inset=inset,
-                                main=main,
-                                mainRaw=mainRaw,
-                                altMediaExpiryDate=timezone.now() + datetime.timedelta(days=30),
-                            )
-                        print(tempInstance.altName)
+        # if 'wowprof-alts-scan-professions-button' in request.POST:
+        #     print("One")
+        #     temptemp = []
+        #     clientToken = getToken(BLIZZ_CLIENT, BLIZZ_SECRET)
+        #     anObj = {'access_token': clientToken, 'namespace': 'profile-eu', 'locale': 'en_US'}
+        #     j = Alt.objects.all()
+        #     for i in j:
+        #         print("Two")
+        #         name = i.altName
+        #         tempRealm = i.altRealm
+        #         realm = tempRealm.replace('\'', '')
+        #         url = 'https://eu.api.blizzard.com/profile/wow/character/' + realm.lower() + '/' + name.lower() + '/professions'
+        #         y = requests.get(url, params=anObj)
+        #         if y.status_code == 200:
+        #             profData = y.json()
+        #             AltProfession.objects.filter(alt=i).delete()
+        #             print(AltProfession.objects.filter(alt=i))
+        #             if 'primaries' in profData:
+        #                 # temptemp.append("YES")
+        #                 test3 = y.json()['primaries']
+        #                 for key in test3:
+        #                     print("Three")
+        #                     professionName = key['profession']['name']
+        #                     # testThing = altData
+        #                     # return HttpResponse(testThing)
+        #                     # if not AltProfession.objects.filter(alt=i,professionName=professionName).exists():
+        #                     p = AltProfession.objects.create(
+        #                         alt=i,
+        #                         professionName=professionName,
+        #                         altProfessionExpiryDate=timezone.now() + datetime.timedelta(days=30),
+        #                         professionData=(key['tiers'])
+        #                     )
+        #                 print(AltProfession.objects.filter(alt=i))
+        # if 'wowprof-alts-scan-achievements-button' in request.POST:
+        #     clientToken = getToken(BLIZZ_CLIENT, BLIZZ_SECRET)
+        #     anObj = {'access_token': clientToken, 'namespace': 'profile-eu', 'locale': 'en_US'}
+        #     # page=requests.get("http://127.0.0.1:8000/wowprof/alts/")
+        #     if 'altId' in request.session:
+        #         for alt in request.session['altId']:
+        #             tempInstance = get_object_or_404(Alt, altId=alt)
+        #             name = tempInstance.altName
+        #             # nameSlug=name.lower()
+        #             tempRealm = tempInstance.altRealm
+        #             realm = tempRealm.replace('\'', '')
+        #             # realmSlug=realm.lower()
+        #             url = 'https://eu.api.blizzard.com/profile/wow/character/' + realm.lower() + '/' + name.lower() + '/achievements'
+        #             y = requests.get(url, params=anObj)
+        #             if y.status_code == 200:
+        #                 achData = y.json()
+        #                 if AltAchievement.objects.filter(alt=tempInstance).exists():
+        #                     q = get_object_or_404(AltAchievement, alt=tempInstance)
+        #                     q.achievementData = achData['achievements']
+        #                     q.altAchievementExpiryDate = timezone.now() + datetime.timedelta(days=30)
+        #                     q.save()
+        #                 else:
+        #                     a = AltAchievement.objects.create(
+        #                         alt=tempInstance,
+        #                         achievementData=achData['achievements'],
+        #                         altAchievementExpiryDate=timezone.now() + datetime.timedelta(days=30),
+        #                     )
+        #                 print(tempInstance.altName)
+        #             else:
+        #                 print(alt)
+        # if 'wowprof-alts-scan-quest-completed-button' in request.POST:
+        #     clientToken = getToken(BLIZZ_CLIENT, BLIZZ_SECRET)
+        #     anObj = {'access_token': clientToken, 'namespace': 'profile-eu', 'locale': 'en_US'}
+        #     if 'altId' in request.session:
+        #         for alt in request.session['altId']:
+        #             tempInstance = get_object_or_404(Alt, altId=alt)
+        #             name = tempInstance.altName
+        #             tempRealm = tempInstance.altRealm
+        #             realm = tempRealm.replace('\'', '')
+        #             url = 'https://eu.api.blizzard.com/profile/wow/character/' + realm.lower() + '/' + name.lower() + '/quests/completed'
+        #             y = requests.get(url, params=anObj)
+        #             if y.status_code == 200:
+        #                 questData = y.json()
+        #                 if AltQuestCompleted.objects.filter(alt=tempInstance).exists():
+        #                     q = get_object_or_404(AltQuestCompleted, alt=tempInstance)
+        #                     q.questCompletedData = questData['quests']
+        #                     q.altQuestCompletedExpiryDate = timezone.now() + datetime.timedelta(days=30)
+        #                     q.save()
+        #                 else:
+        #                     a = AltQuestCompleted.objects.create(
+        #                         alt=tempInstance,
+        #                         questCompletedData=questData['quests'],
+        #                         altQuestCompletedExpiryDate=timezone.now() + datetime.timedelta(days=30),
+        #                     )
+        #                 print(tempInstance.altName)
+        #             # print(y.json())
+        #     # return render(request, "wowprof/wowprof_alts.html")
+        #         # temptemp.append(name)
+        #         # temptemp.append(realm)
+        #         # temptemp.append(y.status_code)
+        #     # return HttpResponse(temptemp)
+        # if 'wowprof-alts-scan-media-button' in request.POST:
+        #     clientToken = getToken(BLIZZ_CLIENT, BLIZZ_SECRET)
+        #     anObj = {'access_token': clientToken, 'namespace': 'profile-eu', 'locale': 'en_US'}
+        #     if 'altId' in request.session:
+        #         for alt in request.session['altId']:
+        #             tempInstance = get_object_or_404(Alt, altId=alt)
+        #             name = tempInstance.altName
+        #             tempRealm = tempInstance.altRealm
+        #             realm = tempRealm.replace('\'', '')
+        #             url = 'https://eu.api.blizzard.com/profile/wow/character/' + realm.lower() + '/' + name.lower() + '/character-media'
+        #             y = requests.get(url, params=anObj)
+        #             if y.status_code == 200:
+        #                 if 'assets' in y.json():
+        #                     mediaData = y.json()['assets']
+        #                     # print(mediaData)
+        #                     # mediaJSON=json.loads(mediaData)
+        #                     # print(mediaJSON)
+        #                     for i in mediaData:
+        #                         if i['key'] == 'avatar':
+        #                             avatar = i['value']
+        #                         elif i['key'] == 'inset':
+        #                             inset = i['value']
+        #                         elif i['key'] == 'main':
+        #                             main = i['value']
+        #                         elif i['key'] == 'main-raw':
+        #                             mainRaw = i['value']
+        #                     print(avatar)
+        #                     print(inset)
+        #                     print(main)
+        #                     print(mainRaw)
+        #                     # for med in mediaData:
+        #                     #   print(med)
+        #                 if AltMedia.objects.filter(alt=tempInstance).exists():
+        #                     m = get_object_or_404(AltMedia, alt=tempInstance)
+        #                     m.avatar = avatar
+        #                     m.inset = inset
+        #                     m.main = main
+        #                     m.mainRaw = mainRaw
+        #                     m.altMediaExpiryDate = timezone.now() + datetime.timedelta(days=30)
+        #                     m.save()
+        #                 else:
+        #                     a = AltMedia.objects.create(
+        #                         alt=tempInstance,
+        #                         avatar=avatar,
+        #                         inset=inset,
+        #                         main=main,
+        #                         mainRaw=mainRaw,
+        #                         altMediaExpiryDate=timezone.now() + datetime.timedelta(days=30),
+        #                     )
+        #                 print(tempInstance.altName)
 
     altData = []
     allAlts = Alt.objects.all()
