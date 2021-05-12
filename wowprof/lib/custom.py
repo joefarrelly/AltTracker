@@ -10,6 +10,11 @@ environ.Env.read_env()
 BLIZZ_CLIENT = env("BLIZZ_CLIENT")
 BLIZZ_SECRET = env("BLIZZ_SECRET")
 
+def my_func(foo, bar):
+    print(foo)
+    print(bar)
+    print("Job in a queue done")
+    return
 
 def getToken(BLIZZ_CLIENT, BLIZZ_SECRET):
     url = 'https://eu.battle.net/oauth/token?grant_type=client_credentials'
@@ -48,6 +53,12 @@ def getAuthAlts(authToken):
     else:
         test = 'IT DIDNT WORK'
         return HttpResponse(test)
+
+
+def get_alt_data_temp(alts):
+    for alt in alts:
+        alt_obj = Alt.objects.get(altId=alt)
+        getAltData(((alt_obj.altName).replace('\'', '')).lower(), (alt_obj.altRealm).lower(), alt_obj)
 
 
 def getAltData(name, realm, alt_obj):

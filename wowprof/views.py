@@ -21,6 +21,8 @@ import json
 
 import datetime
 
+import django_rq
+
 env = environ.Env()
 environ.Env.read_env()
 
@@ -155,28 +157,15 @@ def wowProfAlts(request):
         if 'wowprof-alts-refresh-button' in request.POST:
             url = 'https://eu.battle.net/oauth/authorize?client_id=' + BLIZZ_CLIENT + '&scope=wow.profile&state=blizzardeumz76c&redirect_uri=http%3A%2F%2F' + MAIN_IP + '%2Fwowprof%2Fredirect%2F&response_type=code'
             return redirect(url)
-        if 'wowprof-alts-refresh-data-button' in request.POST:
-            # client_token = getToken(BLIZZ_CLIENT, BLIZZ_SECRET)
-            # anObj = {'access_token': client_token, 'namespace': 'profile-eu', 'locale': 'en_US'}
-            if 'altId' in request.session:
-                for alt in request.session['altId']:
-                    temp_alt = get_object_or_404(Alt, altId=alt)
-                    # print(temp_alt.altName)
-                    # print(temp_alt.altRealm)
-                    # print((temp_alt.altName).lower())
-                    # print(((temp_alt.altRealm).replace('\'', '')).lower())
-                    # name, realm = temp_alt.altName, temp_alt.altRealm
-                    # print(name, realm)
-                    # urls = [
-                    #     'https://eu.api.blizzard.com/profile/wow/character/' + ((temp_alt.altRealm).replace('\'', '')).lower() + '/' + (temp_alt.altName).lower() + '/professions',
-                    #     'https://eu.api.blizzard.com/profile/wow/character/' + ((temp_alt.altRealm).replace('\'', '')).lower() + '/' + (temp_alt.altName).lower() + '/achievements',
-                    #     'https://eu.api.blizzard.com/profile/wow/character/' + ((temp_alt.altRealm).replace('\'', '')).lower() + '/' + (temp_alt.altName).lower() + '/quests/completed',
-                    #     'https://eu.api.blizzard.com/profile/wow/character/' + ((temp_alt.altRealm).replace('\'', '')).lower() + '/' + (temp_alt.altName).lower() + '/character-media'
-                    # ]
-                    # print(urls)
-                    getAltData(((temp_alt.altName).replace('\'', '')).lower(), (temp_alt.altRealm).lower(), temp_alt)
 
-        # if 'wowprof-alts-scan-professions-button' in request.POST:
+        if 'wowprof-alts-refresh-data-button' in request.POST:
+            if 'altId' in request.session:
+                django_rq.enqueue(get_alt_data_temp, request.session['altId'])
+
+        if 'wowprof-alts-scan-professions-button' in request.POST:
+            foo = ['1', '2']
+            baz = ['apple']
+            django_rq.enqueue(my_func, foo, bar=baz)
         #     print("One")
         #     temptemp = []
         #     clientToken = getToken(BLIZZ_CLIENT, BLIZZ_SECRET)

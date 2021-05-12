@@ -65,6 +65,45 @@ class Alt(models.Model):
         unique_together = (("altName", "altRealm"),)
 
 
+class AltCustom(models.Model):
+    alt = models.OneToOneField(Alt, on_delete=models.CASCADE, primary_key=True)
+
+    class Mount(models.TextChoices):
+        SLOW_GROUND = '1 - Slow Ground'
+        FAST_GROUND = '2 - Fast Ground'
+        SLOW_FLYING = '3 - Slow Flying'
+        FAST_FLYING = '4 - Fast Flying'
+    mount = models.CharField(max_length=15, choices=Mount.choices)
+
+    class Garrison(models.TextChoices):
+        LEVEL0 = 'Level 0'
+        LEVEL1 = 'Level 1'
+        LEVEL2 = 'Level 2'
+        LEVEL3 = 'Level 3'
+    garrison = models.CharField(max_length=7, choices=Garrison.choices)
+
+    class MageTower(models.TextChoices):
+        YES = 'Yes'
+        NO = 'No'
+    mageTower = models.CharField(max_length=3, choices=MageTower.choices)
+
+    class ProfessionOption(models.TextChoices):
+        NONE = 'None'
+        ALCHEMY = 'Alchemy'
+        BLACKSMITHING = 'Blacksmithing'
+        ENCHANTING = 'Enchanting'
+        ENGINEERING = 'Engineering'
+        INSCRIPTION = 'Inscription'
+        JEWELCRAFTING = 'Jewelcrafting'
+        LEATHERWORKING = 'Leatherworking'
+        TAILORING = 'Tailoring'
+        HERBALISM = 'Herbalism'
+        MINING = 'Mining'
+        SKINNING = 'Skinning'
+    profession1 = models.CharField(max_length=14, choices=ProfessionOption.choices)
+    profession2 = models.CharField(max_length=14, choices=ProfessionOption.choices)
+
+
 class AltProfession(models.Model):
     alt = models.ForeignKey(Alt, on_delete=models.CASCADE)
 

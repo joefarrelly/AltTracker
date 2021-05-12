@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'wowprof',
+    'django_rq',
 ]
 
 MIDDLEWARE = [
@@ -138,3 +139,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # print ("base dir path", BASE_DIR)
 # print ("static url", STATIC_URL)
 # print ("static root", STATIC_ROOT)
+
+RQ_QUEUES = {
+    'default': {
+        'HOST': 'localhost',
+        'PORT': 6379,
+        'DB': 0,
+        'DEFAULT_TIMEOUT': 360,
+    },
+}
