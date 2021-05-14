@@ -125,8 +125,8 @@ def wowProfRedirect(request):
                     q.altLevel = key['level']
                     q.altName = key['name']
                     q.altRealm = key['realm']['name']
-                    q.altClass = key['playable_class']['name']
-                    q.altRace = key['playable_race']['name']
+                    q.altClass = key['playable_class']['id']
+                    q.altRace = key['playable_race']['id']
                     q.altGender = key['gender']['name']
                     q.altFaction = key['faction']['name']
                     q.altExpiryDate = timezone.now() + datetime.timedelta(days=30)
@@ -137,8 +137,9 @@ def wowProfRedirect(request):
                         altLevel=key['level'],
                         altName=key['name'],
                         altRealm=key['realm']['name'],
-                        altClass=key['playable_class']['name'],
-                        altRace=key['playable_race']['name'],
+                        # altClass=getattr(Alt, ((key['playable_class']['name']).upper()).replace(' ', '_')),
+                        altClass=key['playable_class']['id'],
+                        altRace=key['playable_race']['id'],
                         altGender=key['gender']['name'],
                         altFaction=key['faction']['name'],
                         altExpiryDate=timezone.now() + datetime.timedelta(days=30),
@@ -166,222 +167,89 @@ def wowProfAlts(request):
             foo = ['1', '2']
             baz = ['apple']
             django_rq.enqueue(my_func, foo, bar=baz)
-        #     print("One")
-        #     temptemp = []
-        #     clientToken = getToken(BLIZZ_CLIENT, BLIZZ_SECRET)
-        #     anObj = {'access_token': clientToken, 'namespace': 'profile-eu', 'locale': 'en_US'}
-        #     j = Alt.objects.all()
-        #     for i in j:
-        #         print("Two")
-        #         name = i.altName
-        #         tempRealm = i.altRealm
-        #         realm = tempRealm.replace('\'', '')
-        #         url = 'https://eu.api.blizzard.com/profile/wow/character/' + realm.lower() + '/' + name.lower() + '/professions'
-        #         y = requests.get(url, params=anObj)
-        #         if y.status_code == 200:
-        #             profData = y.json()
-        #             AltProfession.objects.filter(alt=i).delete()
-        #             print(AltProfession.objects.filter(alt=i))
-        #             if 'primaries' in profData:
-        #                 # temptemp.append("YES")
-        #                 test3 = y.json()['primaries']
-        #                 for key in test3:
-        #                     print("Three")
-        #                     professionName = key['profession']['name']
-        #                     # testThing = altData
-        #                     # return HttpResponse(testThing)
-        #                     # if not AltProfession.objects.filter(alt=i,professionName=professionName).exists():
-        #                     p = AltProfession.objects.create(
-        #                         alt=i,
-        #                         professionName=professionName,
-        #                         altProfessionExpiryDate=timezone.now() + datetime.timedelta(days=30),
-        #                         professionData=(key['tiers'])
-        #                     )
-        #                 print(AltProfession.objects.filter(alt=i))
-        # if 'wowprof-alts-scan-achievements-button' in request.POST:
-        #     clientToken = getToken(BLIZZ_CLIENT, BLIZZ_SECRET)
-        #     anObj = {'access_token': clientToken, 'namespace': 'profile-eu', 'locale': 'en_US'}
-        #     # page=requests.get("http://127.0.0.1:8000/wowprof/alts/")
-        #     if 'altId' in request.session:
-        #         for alt in request.session['altId']:
-        #             tempInstance = get_object_or_404(Alt, altId=alt)
-        #             name = tempInstance.altName
-        #             # nameSlug=name.lower()
-        #             tempRealm = tempInstance.altRealm
-        #             realm = tempRealm.replace('\'', '')
-        #             # realmSlug=realm.lower()
-        #             url = 'https://eu.api.blizzard.com/profile/wow/character/' + realm.lower() + '/' + name.lower() + '/achievements'
-        #             y = requests.get(url, params=anObj)
-        #             if y.status_code == 200:
-        #                 achData = y.json()
-        #                 if AltAchievement.objects.filter(alt=tempInstance).exists():
-        #                     q = get_object_or_404(AltAchievement, alt=tempInstance)
-        #                     q.achievementData = achData['achievements']
-        #                     q.altAchievementExpiryDate = timezone.now() + datetime.timedelta(days=30)
-        #                     q.save()
-        #                 else:
-        #                     a = AltAchievement.objects.create(
-        #                         alt=tempInstance,
-        #                         achievementData=achData['achievements'],
-        #                         altAchievementExpiryDate=timezone.now() + datetime.timedelta(days=30),
-        #                     )
-        #                 print(tempInstance.altName)
-        #             else:
-        #                 print(alt)
-        # if 'wowprof-alts-scan-quest-completed-button' in request.POST:
-        #     clientToken = getToken(BLIZZ_CLIENT, BLIZZ_SECRET)
-        #     anObj = {'access_token': clientToken, 'namespace': 'profile-eu', 'locale': 'en_US'}
-        #     if 'altId' in request.session:
-        #         for alt in request.session['altId']:
-        #             tempInstance = get_object_or_404(Alt, altId=alt)
-        #             name = tempInstance.altName
-        #             tempRealm = tempInstance.altRealm
-        #             realm = tempRealm.replace('\'', '')
-        #             url = 'https://eu.api.blizzard.com/profile/wow/character/' + realm.lower() + '/' + name.lower() + '/quests/completed'
-        #             y = requests.get(url, params=anObj)
-        #             if y.status_code == 200:
-        #                 questData = y.json()
-        #                 if AltQuestCompleted.objects.filter(alt=tempInstance).exists():
-        #                     q = get_object_or_404(AltQuestCompleted, alt=tempInstance)
-        #                     q.questCompletedData = questData['quests']
-        #                     q.altQuestCompletedExpiryDate = timezone.now() + datetime.timedelta(days=30)
-        #                     q.save()
-        #                 else:
-        #                     a = AltQuestCompleted.objects.create(
-        #                         alt=tempInstance,
-        #                         questCompletedData=questData['quests'],
-        #                         altQuestCompletedExpiryDate=timezone.now() + datetime.timedelta(days=30),
-        #                     )
-        #                 print(tempInstance.altName)
-        #             # print(y.json())
-        #     # return render(request, "wowprof/wowprof_alts.html")
-        #         # temptemp.append(name)
-        #         # temptemp.append(realm)
-        #         # temptemp.append(y.status_code)
-        #     # return HttpResponse(temptemp)
-        # if 'wowprof-alts-scan-media-button' in request.POST:
-        #     clientToken = getToken(BLIZZ_CLIENT, BLIZZ_SECRET)
-        #     anObj = {'access_token': clientToken, 'namespace': 'profile-eu', 'locale': 'en_US'}
-        #     if 'altId' in request.session:
-        #         for alt in request.session['altId']:
-        #             tempInstance = get_object_or_404(Alt, altId=alt)
-        #             name = tempInstance.altName
-        #             tempRealm = tempInstance.altRealm
-        #             realm = tempRealm.replace('\'', '')
-        #             url = 'https://eu.api.blizzard.com/profile/wow/character/' + realm.lower() + '/' + name.lower() + '/character-media'
-        #             y = requests.get(url, params=anObj)
-        #             if y.status_code == 200:
-        #                 if 'assets' in y.json():
-        #                     mediaData = y.json()['assets']
-        #                     # print(mediaData)
-        #                     # mediaJSON=json.loads(mediaData)
-        #                     # print(mediaJSON)
-        #                     for i in mediaData:
-        #                         if i['key'] == 'avatar':
-        #                             avatar = i['value']
-        #                         elif i['key'] == 'inset':
-        #                             inset = i['value']
-        #                         elif i['key'] == 'main':
-        #                             main = i['value']
-        #                         elif i['key'] == 'main-raw':
-        #                             mainRaw = i['value']
-        #                     print(avatar)
-        #                     print(inset)
-        #                     print(main)
-        #                     print(mainRaw)
-        #                     # for med in mediaData:
-        #                     #   print(med)
-        #                 if AltMedia.objects.filter(alt=tempInstance).exists():
-        #                     m = get_object_or_404(AltMedia, alt=tempInstance)
-        #                     m.avatar = avatar
-        #                     m.inset = inset
-        #                     m.main = main
-        #                     m.mainRaw = mainRaw
-        #                     m.altMediaExpiryDate = timezone.now() + datetime.timedelta(days=30)
-        #                     m.save()
-        #                 else:
-        #                     a = AltMedia.objects.create(
-        #                         alt=tempInstance,
-        #                         avatar=avatar,
-        #                         inset=inset,
-        #                         main=main,
-        #                         mainRaw=mainRaw,
-        #                         altMediaExpiryDate=timezone.now() + datetime.timedelta(days=30),
-        #                     )
-        #                 print(tempInstance.altName)
 
-    altData = []
-    allAlts = Alt.objects.all()
-    altProf = AltProfession.objects.all()
     if 'altId' in request.session:
-        # if request.session.has_key('altId'):
-        for alt in request.session['altId']:
-            tempInstance = get_object_or_404(Alt, altId=alt)
-            # tempInstance=Alt.objects.filter(altId=alt)
-            faction = tempInstance.altFaction
-            level = tempInstance.altLevel
-            name = tempInstance.altName
-            nameSlug = name.lower()
-            realm = tempInstance.altRealm
-            tempRealmSlug = realm.lower()
-            realmSlug = tempRealmSlug.replace('\'', '')
-            altClass = tempInstance.altClass
-            # mount=garrison='N/A'
-            mount = garrison = mt = 0
-            if AltAchievement.objects.filter(alt=alt).exists():
-                tempAch = AltAchievement.objects.filter(alt=alt)
-                tempAchData = tempAch[0].achievementData
-                testing12 = tempAchData[0]
-                for key in tempAch[0].achievementData:
-                    testing12 = key['id']
-                    # testing34=key['criteria']
-                    if testing12 == 891 and key['criteria']['is_completed']:
-                        # testing34=key['criteria']['is_completed']
-                        # if testing34 == True:
-                        # mount='1- Slow Mount'
-                        mount += 1
-                    elif testing12 == 889 and key['criteria']['is_completed']:
-                        # mount='2- Fast Mount'
-                        mount += 1
-                    elif testing12 == 890 and key['criteria']['is_completed']:
-                        # mount='3- Slow Flying'
-                        mount += 1
-                    elif testing12 == 5180 and key['criteria']['is_completed']:
-                        # mount='4- Fast Flying'
-                        mount += 1
-                    elif testing12 == 9100 and key['criteria']['is_completed']:
-                        # garrison='Level 2'
-                        garrison += 1
-                    elif testing12 == 9101 and key['criteria']['is_completed']:
-                        # garrison='Level 3'
-                        garrison += 1
-                    elif testing12 == 9545 and key['criteria']['is_completed']:
-                        garrison += 1
-                    elif testing12 == 9546 and key['criteria']['is_completed']:
-                        garrison += 1
-                # print(testing12)
-            profession1 = profession1Slug = profession2 = profession2Slug = 'Missing'
-            # profession2='Missing'
-            if AltProfession.objects.filter(alt=alt).exists():
-                tempProf = AltProfession.objects.filter(alt=alt)
-                # if tempProf.count() == 1:
-                profession1 = tempProf[0].professionName
-                profession1Slug = profession1.lower()
-                if tempProf.count() > 1:
-                    profession2 = tempProf[1].professionName
-                    profession2Slug = profession2.lower()
+        alt_objects = Alt.objects.select_related('altcustom').filter(pk__in=request.session['altId'])
+        print(alt_objects)
+        print(len(alt_objects))
+        for alt in alt_objects:
+            # print(alt)
+            try:
+                pass
+                # print(alt.altcustom.mount)
+            except AltCustom.DoesNotExist:
+                pass
 
-                # else:
-                #   profession1=tempProf[0].professionName
-                #   profession2=tempProf[1].professionName
-            if AltQuestCompleted.objects.filter(alt=alt).exists():
-                tempQuest = AltQuestCompleted.objects.filter(alt=alt)
-                for key in tempQuest[0].questCompletedData:
-                    testing56 = key['id']
-                    if testing56 == 36848:
-                        mt += 1
-            tempAlt = AltClass(faction, level, name, nameSlug, realm, realmSlug, altClass, mount, garrison, mt, profession1, profession1Slug, profession2, profession2Slug)
-            altData.append(tempAlt)
+    # altData = []
+    # if 'altId' in request.session:
+    #     # if request.session.has_key('altId'):
+    #     for alt in request.session['altId']:
+    #         tempInstance = get_object_or_404(Alt, altId=alt)
+    #         # tempInstance=Alt.objects.filter(altId=alt)
+    #         faction = tempInstance.altFaction
+    #         level = tempInstance.altLevel
+    #         name = tempInstance.altName
+    #         nameSlug = name.lower()
+    #         realm = tempInstance.altRealm
+    #         tempRealmSlug = realm.lower()
+    #         realmSlug = tempRealmSlug.replace('\'', '')
+    #         altClass = tempInstance.altClass
+    #         # mount=garrison='N/A'
+    #         mount = garrison = mt = 0
+    #         if AltAchievement.objects.filter(alt=alt).exists():
+    #             tempAch = AltAchievement.objects.filter(alt=alt)
+    #             tempAchData = tempAch[0].achievementData
+    #             testing12 = tempAchData[0]
+    #             for key in tempAch[0].achievementData:
+    #                 testing12 = key['id']
+    #                 # testing34=key['criteria']
+    #                 if testing12 == 891 and key['criteria']['is_completed']:
+    #                     # testing34=key['criteria']['is_completed']
+    #                     # if testing34 == True:
+    #                     # mount='1- Slow Mount'
+    #                     mount += 1
+    #                 elif testing12 == 889 and key['criteria']['is_completed']:
+    #                     # mount='2- Fast Mount'
+    #                     mount += 1
+    #                 elif testing12 == 890 and key['criteria']['is_completed']:
+    #                     # mount='3- Slow Flying'
+    #                     mount += 1
+    #                 elif testing12 == 5180 and key['criteria']['is_completed']:
+    #                     # mount='4- Fast Flying'
+    #                     mount += 1
+    #                 elif testing12 == 9100 and key['criteria']['is_completed']:
+    #                     # garrison='Level 2'
+    #                     garrison += 1
+    #                 elif testing12 == 9101 and key['criteria']['is_completed']:
+    #                     # garrison='Level 3'
+    #                     garrison += 1
+    #                 elif testing12 == 9545 and key['criteria']['is_completed']:
+    #                     garrison += 1
+    #                 elif testing12 == 9546 and key['criteria']['is_completed']:
+    #                     garrison += 1
+    #             # print(testing12)
+    #         profession1 = profession1Slug = profession2 = profession2Slug = 'Missing'
+    #         # profession2='Missing'
+    #         if AltProfession.objects.filter(alt=alt).exists():
+    #             tempProf = AltProfession.objects.filter(alt=alt)
+    #             # if tempProf.count() == 1:
+    #             profession1 = tempProf[0].professionName
+    #             profession1Slug = profession1.lower()
+    #             if tempProf.count() > 1:
+    #                 profession2 = tempProf[1].professionName
+    #                 profession2Slug = profession2.lower()
+
+    #             # else:
+    #             #   profession1=tempProf[0].professionName
+    #             #   profession2=tempProf[1].professionName
+    #         if AltQuestCompleted.objects.filter(alt=alt).exists():
+    #             tempQuest = AltQuestCompleted.objects.filter(alt=alt)
+    #             for key in tempQuest[0].questCompletedData:
+    #                 testing56 = key['id']
+    #                 if testing56 == 36848:
+    #                     mt += 1
+    #         tempAlt = AltClass(faction, level, name, nameSlug, realm, realmSlug, altClass, mount, garrison, mt, profession1, profession1Slug, profession2, profession2Slug)
+    #         altData.append(tempAlt)
         # print(testing12)
 
     # for key, value in request.session.items():
@@ -449,7 +317,7 @@ def wowProfAlts(request):
     #   test = 'IT DIDNT WORK'
     #   return HttpResponse(test)
     # request.session['altData'] = altData
-    return render(request, "wowprof/wowprof_alts.html", {'altData': altData})  # 'code':code,'state':state
+    return render(request, "wowprof/wowprof_alts.html", {'altData': alt_objects})  # 'code':code,'state':state
 
 
 def wowProfAltsProfession(request, name, realm, profession):

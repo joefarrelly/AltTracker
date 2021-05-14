@@ -10,11 +10,13 @@ environ.Env.read_env()
 BLIZZ_CLIENT = env("BLIZZ_CLIENT")
 BLIZZ_SECRET = env("BLIZZ_SECRET")
 
+
 def my_func(foo, bar):
     print(foo)
     print(bar)
     print("Job in a queue done")
     return
+
 
 def getToken(BLIZZ_CLIENT, BLIZZ_SECRET):
     url = 'https://eu.battle.net/oauth/token?grant_type=client_credentials'
@@ -75,40 +77,51 @@ def getAltData(name, realm, alt_obj):
         response = requests.get(url, params=params)
         if response.status_code == 200:
             if 'professions' in url:
-                # print('professions')
                 try:
-                    data = response.json()['primaries']
                     current_professions = []
+                    data = response.json()['primaries']
                     for profession in data:
                         try:
-                            obj = AltProfession.objects.get(alt=alt_obj, professionName=profession['profession']['name'])
+                            obj = AltProfession.objects.get(alt=alt_obj, profession=profession['profession']['id'])
                             obj.altProfessionExpiryDate = timezone.now() + datetime.timedelta(days=30)
                             obj.professionData = profession['tiers']
                             obj.save()
                         except AltProfession.DoesNotExist:
                             AltProfession.objects.create(
                                 alt=alt_obj,
-                                professionName=profession['profession']['name'],
+                                profession=profession['profession']['id'],
                                 altProfessionExpiryDate=timezone.now() + datetime.timedelta(days=30),
                                 professionData=(profession['tiers'])
                             )
                         finally:
-                            current_professions.append(profession['profession']['name'])
+                            current_professions.append(profession['profession']['id'])
                     existing_professions = AltProfession.objects.filter(alt=alt_obj)
                     print(existing_professions)
                     for profession in existing_professions:
-                        if not (profession.professionName in current_professions):
-                            print('Delete the profession: ' + profession.professionName)
+                        if not (profession.profession in current_professions):
+                            print('Delete the profession: ' + str(profession.profession))
                             profession.delete()
                         else:
-                            print('Do not delete the profession: ' + profession.professionName)
+                            print('Do not delete the profession: ' + str(profession.profession))
                 except KeyError:
                     print(name + '-' + realm + ' has no professions data')
-                    pass
             elif 'achievements' in url:
-                # print('achievements')
                 try:
+                    mount = garrison = 0
                     data = response.json()['achievements']
+                    for achievement in data:
+                        if achievement['id'] == 891 and achievement['criteria']['is_completed']:  # riding skill slow ground
+                            mount += 1
+                        elif achievement['id'] == 889 and achievement['criteria']['is_completed']:  # riding skill fast ground
+                            mount += 1
+                        elif achievement['id'] == 890 and achievement['criteria']['is_completed']:  # riding skill slow flying
+                            mount += 1
+                        elif achievement['id'] == 5180 and achievement['criteria']['is_completed']:  # riding skill fast flying
+                            mount += 1
+                        elif (achievement['id'] == 9100 or achievement['id'] == 9545) and achievement['criteria']['is_completed']:  # garrison level 2, alliance(9100) and horde(9545)
+                            garrison += 1
+                        elif (achievement['id'] == 9101 or achievement['id'] == 9546) and achievement['criteria']['is_completed']:  # garrison level 3, alliance(9101) and horde(9546)
+                            garrison += 1
                     try:
                         obj = AltAchievement.objects.get(alt=alt_obj)
                         obj.achievementData = data
@@ -122,11 +135,13 @@ def getAltData(name, realm, alt_obj):
                         )
                 except KeyError:
                     print(name + '-' + realm + ' has no achievement data')
-                    pass
             elif 'quests/completed' in url:
-                # print('quests')
                 try:
+                    mage_tower = 0
                     data = response.json()['quests']
+                    for quest in data:
+                        if quest['id'] == 36848:
+                            mage_tower += 1
                     try:
                         obj = AltQuestCompleted.objects.get(alt=alt_obj)
                         obj.questCompletedData = data
@@ -140,9 +155,7 @@ def getAltData(name, realm, alt_obj):
                         )
                 except KeyError:
                     print(name + '-' + realm + ' has no quest data')
-                    pass
             elif 'character-media' in url:
-                # print('media')
                 try:
                     for img in response.json()['assets']:
                         if img['key'] == 'avatar':
@@ -172,4 +185,36 @@ def getAltData(name, realm, alt_obj):
                         )
                 except KeyError:
                     print(name + '-' + realm + ' has no media data')
-                    pass
+    try:
+        print(current_professions)
+        print(next(iter(current_professions[0:1] or []), 'MissingOneLineIter'))
+        print(next(iter(current_professions[1:2] or []), 'MissingOneLineIter'))
+    except:
+        print('MissingExcept')
+    try:
+        obj = AltCustom.objects.get(alt=alt_obj)
+        obj.mount = mount
+        obj.garrison = garrison + 1
+        obj.mageTower = mage_tower
+        # obj.profession1 = getattr(AltCustom, (next(iter(current_professions[0:1] or []), 'Missing')).upper())
+        obj.profession1 = next(iter(current_professions[0:1] or []), 0)
+        # obj.profession2 = getattr(AltCustom, (next(iter(current_professions[1:2] or []), 'Missing')).upper())
+        obj.profession2 = next(iter(current_professions[1:2] or []), 0)
+        obj.lastRefresh = timezone.now()
+        obj.save()
+        print('try')
+    except AltCustom.DoesNotExist:
+        print('except')
+        AltCustom.objects.create(
+            alt=alt_obj,
+            mount=mount,
+            garrison=garrison + 1,
+            mageTower=mage_tower,
+            # profession1=getattr(AltCustom, (next(iter(current_professions[0:1] or []), 'Missing')).upper()),
+            profession1=next(iter(current_professions[0:1] or []), 0),
+            # profession2=getattr(AltCustom, (next(iter(current_professions[1:2] or []), 'Missing')).upper()),
+            profession2=next(iter(current_professions[1:2] or []), 0),
+            lastRefresh=timezone.now(),
+        )
+    finally:
+        print('finally')

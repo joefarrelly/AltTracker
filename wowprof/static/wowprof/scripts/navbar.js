@@ -36,7 +36,7 @@ $(function() {
 
 $(function() {
     $('#alts-table td:nth-child(9)').each(function(index) {
-        var classColor = ['Y','N','N/A'];
+        var classColor = ['Yes','No'];
         var className = $(this).text();
         var tempMo = $(this).parent("tr");
         var tempMo2 = tempMo[0].cells;

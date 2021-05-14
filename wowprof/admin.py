@@ -10,5 +10,5 @@ admin.site.register(AltProfession)
 admin.site.register(AltAchievement)
 admin.site.register(AltQuestCompleted)
 admin.site.register(AltMedia)
-admin.site.register(Requiem)
-admin.site.register(Token)
+# admin.site.register(Requiem) -- ~No longer used
+# admin.site.register(Token) -- No longer used

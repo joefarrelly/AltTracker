@@ -127,13 +127,13 @@ th, td {
     background-color: #C41F3B;  
 }
 
-.Y{
+.Yes{
     background-color: #4CE87C;
 }
-.N\/A{
+/*.N\/A{
     background-color: #4CE87C;
-}
-.N{
+}*/
+.No{
     background-color: #E74343;
 }
 
