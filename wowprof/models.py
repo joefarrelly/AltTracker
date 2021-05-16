@@ -154,7 +154,7 @@ class AltProfession(models.Model):
         db_table = 'alttracker_altprofession'
 
     def __str__(self):
-        return '%s - %s : %s' % (self.alt.altName, self.alt.altRealm, self.profession.name)
+        return '%s - %s : %s' % (self.alt.altName, self.alt.altRealm, self.get_profession_display())
 
 
 class AltAchievement(models.Model):
