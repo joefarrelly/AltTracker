@@ -9,6 +9,7 @@ class Alt(models.Model):
     altLevel = models.PositiveSmallIntegerField()
     altName = models.CharField(max_length=40)
     altRealm = models.CharField(max_length=40)
+    altRealmSlug = models.CharField(max_length=40)
 
     class AltClass(models.IntegerChoices):
         NO_CLASS = 0, _('No Class')
@@ -60,8 +61,10 @@ class Alt(models.Model):
     altExpiryDate = models.DateTimeField()
 
     class Meta:
-        unique_together = (("altName", "altRealm"),)
         db_table = 'alttracker_alt'
+        constraints = [
+            models.UniqueConstraint(fields=['altName', 'altRealmSlug'], name='unique_alt')
+        ]
 
     def __str__(self):
         return '%s - %s' % (self.altName, self.altRealm)
@@ -150,8 +153,10 @@ class AltProfession(models.Model):
     professionData = models.JSONField()
 
     class Meta:
-        unique_together = (("alt", "profession"),)
         db_table = 'alttracker_altprofession'
+        constraints = [
+            models.UniqueConstraint(fields=['alt', 'profession'], name='unique_profession')
+        ]
 
     def __str__(self):
         return '%s - %s : %s' % (self.alt.altName, self.alt.altRealm, self.get_profession_display())
@@ -184,16 +189,47 @@ class AltQuestCompleted(models.Model):
 class AltMedia(models.Model):
     alt = models.OneToOneField(Alt, on_delete=models.CASCADE, primary_key=True)
     altMediaExpiryDate = models.DateTimeField()
-    avatar = models.CharField(max_length=100)
-    inset = models.CharField(max_length=100)
-    main = models.CharField(max_length=100)
-    mainRaw = models.CharField(max_length=100)
+    avatar = models.CharField(max_length=100, default=None)
+    inset = models.CharField(max_length=100, default=None)
+    main = models.CharField(max_length=100, default=None)
+    mainRaw = models.CharField(max_length=100, default=None)
 
     class Meta:
         db_table = 'alttracker_altmedia'
 
     def __str__(self):
         return '%s - %s' % (self.alt.altName, self.alt.altRealm)
+
+
+class Equipment(models.Model):
+    item_id = models.PositiveIntegerField(primary_key=True)
+    name = models.CharField(max_length=80)
+    # required_level = models.CharField(max_length=80)
+    slot = models.CharField(max_length=20)
+    quality = models.CharField(max_length=20)
+    armour_type = models.CharField(max_length=20)
+    icon = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'alttracker_equipment'
+
+    def __str__(self):
+        return '%s' % (self.name)
+
+
+class AltEquipment(models.Model):
+    alt = models.ForeignKey(Alt, on_delete=models.CASCADE)
+    equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE)
+    altEquipmentExpiryDate = models.DateTimeField()
+    item_level = models.PositiveSmallIntegerField()
+    stats = models.JSONField()
+    slot = models.CharField(max_length=20)
+
+    class Meta:
+        db_table = 'alttracker_altequipment'
+
+    def __str__(self):
+        return '%s' % (self.alt.altName)
 
 
 ######################################################################################

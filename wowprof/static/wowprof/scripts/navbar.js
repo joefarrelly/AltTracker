@@ -506,3 +506,22 @@ function sortTableSpecial(n) {
 
 
 
+
+// function doSomething() {
+//     // alert("I'm done resizing for the moment");
+//     image = document.getElementById('character-image')
+//     width = window.innerWidth;
+//     // alert(width)
+//     temp = width / -4
+//     // alert(temp)
+//     temp = temp + 'px'
+//     // alert(temp)
+//     image.style.marginTop = temp;
+// };
+
+// var resizeTimer;
+// $(window).resize(function() {
+//     clearTimeout(resizeTimer);
+//     resizeTimer = setTimeout(doSomething, 500);
+// });
+

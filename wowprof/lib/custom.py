@@ -4,6 +4,10 @@ import datetime
 from django.utils import timezone
 from wowprof.models import *
 
+from ratelimit import limits, sleep_and_retry
+
+SECOND = 1
+
 env = environ.Env()
 environ.Env.read_env()
 
@@ -26,43 +30,14 @@ def getToken(BLIZZ_CLIENT, BLIZZ_SECRET):
     return token
 
 
-def getAuthAlts(authToken):
-    url = "https://eu.api.blizzard.com/profile/user/wow?namespace=profile-eu&locale=en_US"
-    myobj = {'access_token': authToken}
-    y = requests.get(url, params=myobj)
-    if y.status_code == 200:
-        # Alt.objects.all().delete()
-        # response = y.content
-        # altData = []
-        test = y.json()['wow_accounts'][0]['characters']
-        for key in test:
-            alt = key['id']
-            level = key['level']
-            name = key['name']
-            realm = key['realm']['name']
-            altClass = key['playable_class']['name']
-            altRace = key['playable_race']['name']
-            gender = key['gender']['name']
-            faction = key['faction']['name']
-            nameSlug = name.lower()
-            realmSlug = realm.lower()
-            altClassSlug = altClass.lower()
-            # tempAlt = AltClass(name,realm,altClass,nameSlug,realmSlug,altClassSlug)
-            # tempAltForm = SaveAltsForm(tempAlt)
-            if not Alt.objects.filter(altId=key['id']).exists():
-                p = Alt.objects.create(altId=alt, altLevel=level, altName=name, altRealm=realm, altClass=altClass, altRace=altRace, altGender=gender, altFaction=faction)
-            # altData.append(tempAlt)
-    else:
-        test = 'IT DIDNT WORK'
-        return HttpResponse(test)
-
-
 def get_alt_data_temp(alts):
     for alt in alts:
         alt_obj = Alt.objects.get(altId=alt)
         getAltData(((alt_obj.altName).replace('\'', '')).lower(), (alt_obj.altRealm).lower(), alt_obj)
 
 
+@sleep_and_retry
+@limits(calls=100, period=SECOND)
 def getAltData(name, realm, alt_obj):
     print(name + '-' + realm)
     client_token = getToken(BLIZZ_CLIENT, BLIZZ_SECRET)
@@ -71,7 +46,8 @@ def getAltData(name, realm, alt_obj):
         'https://eu.api.blizzard.com/profile/wow/character/' + ((realm).replace('\'', '')).lower() + '/' + (name).lower() + '/professions',
         'https://eu.api.blizzard.com/profile/wow/character/' + ((realm).replace('\'', '')).lower() + '/' + (name).lower() + '/achievements',
         'https://eu.api.blizzard.com/profile/wow/character/' + ((realm).replace('\'', '')).lower() + '/' + (name).lower() + '/quests/completed',
-        'https://eu.api.blizzard.com/profile/wow/character/' + ((realm).replace('\'', '')).lower() + '/' + (name).lower() + '/character-media'
+        'https://eu.api.blizzard.com/profile/wow/character/' + ((realm).replace('\'', '')).lower() + '/' + (name).lower() + '/character-media',
+        'https://eu.api.blizzard.com/profile/wow/character/' + ((realm).replace('\'', '')).lower() + '/' + (name).lower() + '/equipment'
     ]
     for url in urls:
         response = requests.get(url, params=params)
@@ -96,13 +72,11 @@ def getAltData(name, realm, alt_obj):
                         finally:
                             current_professions.append(profession['profession']['id'])
                     existing_professions = AltProfession.objects.filter(alt=alt_obj)
-                    print(existing_professions)
                     for profession in existing_professions:
                         if not (profession.profession in current_professions):
-                            print('Delete the profession: ' + str(profession.profession))
                             profession.delete()
                         else:
-                            print('Do not delete the profession: ' + str(profession.profession))
+                            pass
                 except KeyError:
                     print(name + '-' + realm + ' has no professions data')
             elif 'achievements' in url:
@@ -185,12 +159,60 @@ def getAltData(name, realm, alt_obj):
                         )
                 except KeyError:
                     print(name + '-' + realm + ' has no media data')
-    try:
-        print(current_professions)
-        print(next(iter(current_professions[0:1] or []), 'MissingOneLineIter'))
-        print(next(iter(current_professions[1:2] or []), 'MissingOneLineIter'))
-    except:
-        print('MissingExcept')
+            elif 'equipment' in url:
+                try:
+                    data = response.json()['equipped_items']
+                    print(len(data))
+                    for item in data:
+                        try:
+                            obj = Equipment.objects.get(item_id=item['item']['id'])
+                            obj.name = item['name']
+                            obj.slot = item['slot']['name']
+                            obj.quality = item['quality']['name']
+                            obj.armour_type = item['item_subclass']['name']
+                            # obj.icon = media_url
+                            obj.save()
+                        except Equipment.DoesNotExist:
+                            media_url_response = requests.get('https://eu.api.blizzard.com/data/wow/media/item/' + str(item['item']['id']), params={'access_token': client_token, 'namespace': 'static-eu', 'locale': 'en_US'})
+                            if media_url_response.status_code == 200:
+                                try:
+                                    media_url = media_url_response.json()['assets'][0]['value']
+                                except KeyError:
+                                    print('Could not locate equipment icon')
+                                    media_url = 'Icon not found'
+                            else:
+                                media_url = 'Icon not found2'
+                            obj = Equipment.objects.create(
+                                item_id=item['item']['id'],
+                                name=item['name'],
+                                # required_level=required_level,
+                                slot=item['slot']['name'],
+                                quality=item['quality']['name'],
+                                armour_type=item['item_subclass']['name'],
+                                icon=media_url
+                            )
+                        if 'stats' in item:
+                            stats = item['stats']
+                        else:
+                            stats = 'None'
+                        try:
+                            obj1 = AltEquipment.objects.get(alt=alt_obj, slot=item['slot']['name'])
+                            obj1.item_level = item['level']['value']
+                            obj1.stats = stats
+                            obj1.altEquipmentExpiryDate = timezone.now() + datetime.timedelta(days=30)
+                            obj1.save()
+                        except AltEquipment.DoesNotExist:
+                            AltEquipment.objects.create(
+                                alt=alt_obj,
+                                equipment=obj,
+                                item_level=item['level']['value'],
+                                stats=stats,
+                                altEquipmentExpiryDate=timezone.now() + datetime.timedelta(days=30),
+                                slot=item['slot']['name']
+                            )
+                except KeyError:
+                    print(name + '-' + realm + ' has no equipment data')
+                    print(KeyError)
     try:
         obj = AltCustom.objects.get(alt=alt_obj)
         obj.mount = mount
@@ -202,9 +224,7 @@ def getAltData(name, realm, alt_obj):
         obj.profession2 = next(iter(current_professions[1:2] or []), 0)
         obj.lastRefresh = timezone.now()
         obj.save()
-        print('try')
     except AltCustom.DoesNotExist:
-        print('except')
         AltCustom.objects.create(
             alt=alt_obj,
             mount=mount,
@@ -217,4 +237,4 @@ def getAltData(name, realm, alt_obj):
             lastRefresh=timezone.now(),
         )
     finally:
-        print('finally')
+        pass

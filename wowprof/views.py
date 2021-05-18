@@ -108,43 +108,44 @@ def wowProfRedirect(request):
             for key in test:
                 # alt = key['id']
                 # level = key['level']
-                name = key['name']
-                realm = key['realm']['name']
-                altClass = key['playable_class']['name']
+                # name = key['name']
+                # realm = key['realm']['name']
+                # altClass = key['playable_class']['name']
                 # altRace = key['playable_race']['name']
                 # gender =  key['gender']['name']
                 # faction = key['faction']['name']
-                nameSlug = name.lower()
-                realmSlug = realm.lower()
-                altClassSlug = altClass.lower()
+                # nameSlug = name.lower()
+                # realmSlug = realm.lower()
+                # altClassSlug = altClass.lower()
                 # tempAlt = AltClass(name,realm,altClass,nameSlug,realmSlug,altClassSlug)
                 # tempAltForm = SaveAltsForm(tempAlt)
+                # realmSlug = key['realm']['slug']
                 altId.append(key['id'])
-                if Alt.objects.filter(altId=key['id']).exists():
-                    q = get_object_or_404(Alt, altId=key['id'])
-                    q.altLevel = key['level']
-                    q.altName = key['name']
-                    q.altRealm = key['realm']['name']
-                    q.altClass = key['playable_class']['id']
-                    q.altRace = key['playable_race']['id']
-                    q.altGender = key['gender']['name']
-                    q.altFaction = key['faction']['name']
-                    q.altExpiryDate = timezone.now() + datetime.timedelta(days=30)
-                    q.save()
-                else:       # Alt.objects.filter(altId=key['id']).exists():
-                    p = Alt.objects.create(
+                try:
+                    obj = Alt.objects.get(altId=key['id'])
+                    obj.altLevel = key['level']
+                    obj.altName = key['name']
+                    obj.altRealm = key['realm']['name']
+                    obj.altRealmSlug = key['realm']['slug']
+                    obj.altClass = key['playable_class']['id']
+                    obj.altRace = key['playable_race']['id']
+                    obj.altGender = key['gender']['name']
+                    obj.altFaction = key['faction']['name']
+                    obj.altExpiryDate = timezone.now() + datetime.timedelta(days=30)
+                    obj.save()
+                except Alt.DoesNotExist:
+                    Alt.objects.create(
                         altId=key['id'],
                         altLevel=key['level'],
                         altName=key['name'],
                         altRealm=key['realm']['name'],
-                        # altClass=getattr(Alt, ((key['playable_class']['name']).upper()).replace(' ', '_')),
+                        altRealmSlug=key['realm']['slug'],
                         altClass=key['playable_class']['id'],
                         altRace=key['playable_race']['id'],
                         altGender=key['gender']['name'],
                         altFaction=key['faction']['name'],
-                        altExpiryDate=timezone.now() + datetime.timedelta(days=30),
+                        altExpiryDate=timezone.now() + datetime.timedelta(days=30)
                     )
-                # altData.append(tempAlt)
         request.session['altId'] = altId
     else:
         test = 'IT DIDNT WORK'
@@ -171,8 +172,8 @@ def wowProfAlts(request):
     alt_objects = []
     if 'altId' in request.session:
         alt_objects = Alt.objects.select_related('altcustom').filter(pk__in=request.session['altId'])
-        print(alt_objects)
-        print(len(alt_objects))
+        # print(alt_objects)
+        # print(len(alt_objects))
         for alt in alt_objects:
             try:
                 pass
@@ -183,34 +184,29 @@ def wowProfAlts(request):
 
 
 def wowProfAltsProfession(request, name, realm, profession):
-    # myobj = {'name':name,'realm':realm,'profession':profession}
-    # clientToken=getToken(BLIZZ_CLIENT,BLIZZ_SECRET)
-    # anObj={'access_token':clientToken,'namespace':'profile-eu','locale':'en_US'}
-    # url='https://eu.api.blizzard.com/profile/wow/character/'+realm.lower()+'/'+name.lower()+'/professions'
-    # y = requests.get(url, params = anObj)
-    # if y.status_code == 200:
-    #   y.json()
-    tempInstance = get_object_or_404(Alt, altName=name, altRealm=realm)
-    tempInstance2 = get_object_or_404(AltProfession, alt=tempAlt, profession=getattr(AltProfession.Profession, profession.upper()))
-    # tempInstance=get_object_or_404(Alt, altId=alt)
+    tempInstance = get_object_or_404(Alt, altName=name, altRealmSlug=realm)
+    tempInstance2 = get_object_or_404(AltProfession, alt=tempInstance, profession=getattr(AltProfession.Profession, profession.upper()))
     tempMyObj = tempInstance2.professionData
-    # for key in tempMyObj:
-    #   tempName=key['tier']['name']
-    #   tempRecipe
     return render(request, "wowprof/wowprof_alts_profession.html", {'data': tempMyObj})
 
 
 def wowProfAltsMoreDetails(request, name, realm):
-    tempInstance = get_object_or_404(Alt, altName=name, altRealm=realm)
-    tempAlt = tempInstance.altId
-    tempInstance2 = get_object_or_404(AltMedia, alt=tempAlt)
-    # tempData = tempInstance2.main
-    tempData = tempInstance2.mainRaw
-    return render(request, "wowprof/wowprof_alts_more.html", {'data': tempData})
-# def calcHome(request):
-#   return render(
-#       request,
-#       "wowprof/calc_home.html")
+    try:
+        alt_obj = Alt.objects.get(altName=name, altRealmSlug=realm)
+    except Alt.DoesNotExist:
+        alt_obj = 0
+    try:
+        media_obj = AltMedia.objects.get(alt=alt_obj)
+    except AltMedia.DoesNotExist:
+        media_obj = []
+    try:
+        equipment_objs = AltEquipment.objects.prefetch_related('equipment').filter(alt=alt_obj)
+    except AltEquipment.DoesNotExist:
+        equipment_objs = []
+    # tempInstance = get_object_or_404(Alt, altName=name, altRealm=realm)
+    # tempInstance2 = get_object_or_404(AltMedia, alt=tempAlt)
+    # tempData = tempInstance2.mainRaw
+    return render(request, "wowprof/wowprof_alts_more.html", {'alt': alt_obj, 'media': media_obj, 'equipment': equipment_objs})
 
 
 def wowProfRequiem(request):
