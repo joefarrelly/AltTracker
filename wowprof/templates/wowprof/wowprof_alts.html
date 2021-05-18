@@ -2,6 +2,7 @@
 {% block title %}WoWProf Alts
 {% endblock %}
 {% load static %}
+{% load alttracker_filters %}
 {% block content %}
 <div class="price-list">
     <h2 id="price-list-header"  style="text-align: center">WoW All Alts</h2>
@@ -14,9 +15,9 @@
         </form>
         <form method="post">
             {% csrf_token %}
-            <input type="submit" id="wowprof-alts-scan-professions-button" name="wowprof-alts-scan-professions-button" value="Scan Professions" />
+            <input type="submit" id="wowprof-alts-scan-professions-button" name="wowprof-alts-scan-professions-button" value="TEST" />
         </form>
-        <form method="post">
+<!--         <form method="post">
             {% csrf_token %}
             <input type="submit" id="wowprof-alts-scan-achievements-button" name="wowprof-alts-scan-achievements-button" value="Scan Achievements" />
         </form>
@@ -27,7 +28,7 @@
         <form method="post">
             {% csrf_token %}
             <input type="submit" id="wowprof-alts-scan-media-button" name="wowprof-alts-scan-media-button" value="Scan Media" />
-        </form>
+        </form> -->
         <form method="post">
             {% csrf_token %}
             <input type="submit" id="wowprof-alts-refresh-data-button" name="wowprof-alts-refresh-data-button" value="Refresh Data" />
@@ -55,53 +56,29 @@
                 {% for a in altData %}
                 <tr>
                     <td>{{ a.index }}</td>
-                    {% if a.faction == 'Alliance' %}
+                    {% if a.altFaction == 'Alliance' %}
                         <td><img src="{% static 'wowprof/images/alliance.png' %}" alt="Alliance logo" style="width:30px;height:30px"></td>
                     {% else %}
                         <td><img src="{% static 'wowprof/images/horde.png' %}" alt="Horde logo" style="width:30px;height:30px"></td>
                     {% endif %}
-                    <td>{{ a.level }}</td>
-                    <td>{{ a.name }}</td>
-                    <td>{{ a.realm }}</td>
-                    <td>{{ a.altClass }}</td>
-                    {% if a.mount == 4 %}
-                        <td>4- Fast Flying</td>
-                    {% elif a.mount == 3 %}
-                        <td>3- Flying</td>
-                    {% elif a.mount == 2 %}
-                        <td>2- Fast Ground</td>
-                    {% elif a.mount == 1 %}
-                        <td>1- Ground</td>
+                    <td>{{ a.altLevel }}</td>
+                    <td>{{ a.altName }}</td>
+                    <td>{{ a.altRealm }}</td>
+                    <td>{{ a.get_altClass_display }}</td>
+                    <td>{{ a.altcustom.get_mount_display }}</td>
+                    <td>{{ a.altcustom.get_garrison_display }}</td>
+                    <td>{{ a.altcustom.get_mageTower_display }}</td>
+                    {% if a.altcustom.get_profession1_display == 'Missing' or not a.altcustom %}
+                        <td><a>{{ a.altcustom.get_profession1_display }}</a></td>
                     {% else %}
-                        <td></td>
+                        <td><a href="{% url 'wowprof_alts_profession' name=a.altName|slug realm=a.altRealm|slug profession=a.altcustom.get_profession1_display|slug %}">{{ a.altcustom.get_profession1_display }}</a></td>
                     {% endif %}
-                    {% if a.garrison == 2 %}
-                        <td>Level 3</td>
-                    {% elif a.garrison == 1 %}
-                        <td>Level 2</td>
+                    {% if a.altcustom.get_profession2_display == 'Missing' or not a.altcustom %}
+                        <td><a>{{ a.altcustom.get_profession2_display }}</a></td>
                     {% else %}
-                        <td></td>
+                        <td><a href="{% url 'wowprof_alts_profession' name=a.altName|slug realm=a.altRealm|slug profession=a.altcustom.get_profession2_display|slug %}">{{ a.altcustom.get_profession2_display }}</a></td>
                     {% endif %}
-                    {% if a.garrison == 2 and a.faction == 'Horde' %}
-                        <td>N/A</td>
-                    {% elif a.garrison == 2 and a.mt == 1 %}
-                        <td>Y</td>
-                    {% elif a.garrison == 2 and a.mt == 0 %}
-                        <td>N</td>
-                    {% else %}
-                        <td></td>
-                    {% endif %}
-                    {% if a.altProfession1 == 'Missing' %}
-                        <td><a>None</a></td>
-                    {% else %}
-                        <td><a href="{% url 'wowprof_alts_profession' name=a.nameSlug realm=a.realmSlug profession=a.altProfession1Slug %}">{{ a.altProfession1 }}</a></td>
-                    {% endif %}
-                    {% if a.altProfession2 == 'Missing' %}
-                        <td><a>None</a></td>
-                    {% else %}
-                        <td><a href="{% url 'wowprof_alts_profession' name=a.nameSlug realm=a.realmSlug profession=a.altProfession2Slug %}">{{ a.altProfession2 }}</a></td>
-                    {% endif %}
-                        <td><a href="{% url 'wowprof_alts_more' name=a.nameSlug realm=a.realmSlug %}"><button type="button">>></button></a></td>
+                    <td><a href="{% url 'wowprof_alts_more' name=a.altName|slug realm=a.altRealm|slug %}"><button type="button">>></button></a></td>
                 </tr>
                 {% endfor %}
             </table>

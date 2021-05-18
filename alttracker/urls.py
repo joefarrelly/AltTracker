@@ -22,4 +22,5 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('wowprof/', include('wowprof.urls')),
     path('admin/', admin.site.urls),
+    path('django-rq/', include('django_rq.urls'))
 ]

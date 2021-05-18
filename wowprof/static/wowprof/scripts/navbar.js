@@ -36,7 +36,7 @@ $(function() {
 
 $(function() {
     $('#alts-table td:nth-child(9)').each(function(index) {
-        var classColor = ['Y','N','N/A'];
+        var classColor = ['Yes','No'];
         var className = $(this).text();
         var tempMo = $(this).parent("tr");
         var tempMo2 = tempMo[0].cells;
@@ -505,4 +505,23 @@ function sortTableSpecial(n) {
 //});
 
 
+
+
+// function doSomething() {
+//     // alert("I'm done resizing for the moment");
+//     image = document.getElementById('character-image')
+//     width = window.innerWidth;
+//     // alert(width)
+//     temp = width / -4
+//     // alert(temp)
+//     temp = temp + 'px'
+//     // alert(temp)
+//     image.style.marginTop = temp;
+// };
+
+// var resizeTimer;
+// $(window).resize(function() {
+//     clearTimeout(resizeTimer);
+//     resizeTimer = setTimeout(doSomething, 500);
+// });
 
