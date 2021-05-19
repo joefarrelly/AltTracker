@@ -138,7 +138,7 @@ def wowProfAlts(request):
 
 
 def wowProfAltsProfession(request, name, realm, profession):
-    tempInstance = get_object_or_404(Alt, altName=name, altRealmSlug=realm)
+    tempInstance = get_object_or_404(Alt, altName=name.capitalize(), altRealmSlug=realm)
     tempInstance2 = get_object_or_404(AltProfession, alt=tempInstance, profession=getattr(AltProfession.Profession, profession.upper()))
     tempMyObj = tempInstance2.professionData
     return render(request, "wowprof/wowprof_alts_profession.html", {'data': tempMyObj})
@@ -146,7 +146,7 @@ def wowProfAltsProfession(request, name, realm, profession):
 
 def wowProfAltsMoreDetails(request, name, realm):
     try:
-        alt_obj = Alt.objects.get(altName=name, altRealmSlug=realm)
+        alt_obj = Alt.objects.get(altName=name.capitalize(), altRealmSlug=realm)
     except Alt.DoesNotExist:
         alt_obj = 0
     try:
