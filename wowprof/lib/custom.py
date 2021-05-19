@@ -4,6 +4,8 @@ import datetime
 from django.utils import timezone
 from wowprof.models import *
 
+from urllib.parse import quote
+
 from ratelimit import limits, sleep_and_retry
 
 SECOND = 1
@@ -33,7 +35,7 @@ def getToken(BLIZZ_CLIENT, BLIZZ_SECRET):
 def get_alt_data_temp(alts):
     for alt in alts:
         alt_obj = Alt.objects.get(altId=alt)
-        getAltData(((alt_obj.altName).replace('\'', '')).lower(), (alt_obj.altRealm).lower(), alt_obj)
+        getAltData(((alt_obj.altName).replace('\'', '')).lower(), ((alt_obj.altRealm).replace('\'', '')).lower(), alt_obj)
 
 
 @sleep_and_retry
@@ -43,18 +45,20 @@ def getAltData(name, realm, alt_obj):
     client_token = getToken(BLIZZ_CLIENT, BLIZZ_SECRET)
     params = {'access_token': client_token, 'namespace': 'profile-eu', 'locale': 'en_US'}
     urls = [
-        'https://eu.api.blizzard.com/profile/wow/character/' + ((realm).replace('\'', '')).lower() + '/' + (name).lower() + '/professions',
-        'https://eu.api.blizzard.com/profile/wow/character/' + ((realm).replace('\'', '')).lower() + '/' + (name).lower() + '/achievements',
-        'https://eu.api.blizzard.com/profile/wow/character/' + ((realm).replace('\'', '')).lower() + '/' + (name).lower() + '/quests/completed',
-        'https://eu.api.blizzard.com/profile/wow/character/' + ((realm).replace('\'', '')).lower() + '/' + (name).lower() + '/character-media',
-        'https://eu.api.blizzard.com/profile/wow/character/' + ((realm).replace('\'', '')).lower() + '/' + (name).lower() + '/equipment'
+        'https://eu.api.blizzard.com/profile/wow/character/' + realm + '/' + quote(name) + '/professions',
+        'https://eu.api.blizzard.com/profile/wow/character/' + realm + '/' + quote(name) + '/achievements',
+        'https://eu.api.blizzard.com/profile/wow/character/' + realm + '/' + quote(name) + '/quests/completed',
+        'https://eu.api.blizzard.com/profile/wow/character/' + realm + '/' + quote(name) + '/character-media',
+        'https://eu.api.blizzard.com/profile/wow/character/' + realm + '/' + quote(name) + '/equipment'
     ]
+    mount = garrison = mage_tower = 0
+    current_professions = []
     for url in urls:
         response = requests.get(url, params=params)
         if response.status_code == 200:
             if 'professions' in url:
                 try:
-                    current_professions = []
+                    # current_professions = []
                     data = response.json()['primaries']
                     for profession in data:
                         try:
@@ -81,7 +85,7 @@ def getAltData(name, realm, alt_obj):
                     print(name + '-' + realm + ' has no professions data')
             elif 'achievements' in url:
                 try:
-                    mount = garrison = 0
+                    # mount = garrison = 0
                     data = response.json()['achievements']
                     for achievement in data:
                         if achievement['id'] == 891 and achievement['criteria']['is_completed']:  # riding skill slow ground
@@ -111,7 +115,7 @@ def getAltData(name, realm, alt_obj):
                     print(name + '-' + realm + ' has no achievement data')
             elif 'quests/completed' in url:
                 try:
-                    mage_tower = 0
+                    # mage_tower = 0
                     data = response.json()['quests']
                     for quest in data:
                         if quest['id'] == 36848:
@@ -131,6 +135,7 @@ def getAltData(name, realm, alt_obj):
                     print(name + '-' + realm + ' has no quest data')
             elif 'character-media' in url:
                 try:
+                    avatar = inset = main = mainRaw = 'No media'
                     for img in response.json()['assets']:
                         if img['key'] == 'avatar':
                             avatar = img['value']

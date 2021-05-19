@@ -36,29 +36,10 @@ HOST_IP = env("HOST_IP")
 MAIN_IP = HOST_IP
 
 
-# altData = []
-# def index(request):
-#   return render(
-#       request,
-#       "home/home.html")
-
-# def index(request):
-#   return HttpResponse(env("BLIZZ_SECRET")+"  :  "+env("BLIZZ_CLIENT"))
-
 def wowProfHome(request):
     if request.method == 'POST':
-        if ('wowprof-home-delete-button' in request.POST):
-            tempDel = 112997951
-        # Alt.objects.filter(altId=tempDel).delete()
-            Alt.objects.all().delete()
-        else:
-            # url = 'https://us.battle.net/oauth/token?grant_type=client_credentials'
-            # myobj = {'client_id': BLIZZ_CLIENT, 'client_secret': BLIZZ_SECRET}
-            # x = requests.post(url, data = myobj)
-            # token = x.json()['access_token']
-            # return HttpResponse("it worked" + token)
-            url = 'https://eu.battle.net/oauth/authorize?client_id=' + BLIZZ_CLIENT + '&scope=wow.profile&state=blizzardeumz76c&redirect_uri=http%3A%2F%2F' + MAIN_IP + '%2Fwowprof%2Fredirect%2F&response_type=code'
-            return redirect(url)
+        url = 'https://eu.battle.net/oauth/authorize?client_id=' + BLIZZ_CLIENT + '&scope=wow.profile&state=blizzardeumz76c&redirect_uri=http%3A%2F%2F' + MAIN_IP + '%2Fwowprof%2Fredirect%2F&response_type=code'
+        return redirect(url)
     if 'code' in request.session:
         temp2 = {
             'code': request.session['code'],
@@ -86,40 +67,15 @@ def wowProfRedirect(request):
 
     request.session['authToken'] = authToken
 
-    # altList = ['1','2']
-
-    # temp = {
-    #   'code':code,
-    #   'state':state,
-    # }
-
     url = "https://eu.api.blizzard.com/profile/user/wow?namespace=profile-eu&locale=en_US"
     myobj = {'access_token': authToken}
     y = requests.get(url, params=myobj)
     if y.status_code == 200:
-        # Alt.objects.all().delete()
-        # response = y.content
-        # altData = []
         altId = []
-        # test = y.json()['wow_accounts'][0]['characters']
         test1 = y.json()['wow_accounts']
         for key1 in test1:
             test = key1['characters']
             for key in test:
-                # alt = key['id']
-                # level = key['level']
-                # name = key['name']
-                # realm = key['realm']['name']
-                # altClass = key['playable_class']['name']
-                # altRace = key['playable_race']['name']
-                # gender =  key['gender']['name']
-                # faction = key['faction']['name']
-                # nameSlug = name.lower()
-                # realmSlug = realm.lower()
-                # altClassSlug = altClass.lower()
-                # tempAlt = AltClass(name,realm,altClass,nameSlug,realmSlug,altClassSlug)
-                # tempAltForm = SaveAltsForm(tempAlt)
-                # realmSlug = key['realm']['slug']
                 altId.append(key['id'])
                 try:
                     obj = Alt.objects.get(altId=key['id'])
@@ -164,16 +120,14 @@ def wowProfAlts(request):
             if 'altId' in request.session:
                 django_rq.enqueue(get_alt_data_temp, request.session['altId'])
 
-        if 'wowprof-alts-scan-professions-button' in request.POST:
-            foo = ['1', '2']
-            baz = ['apple']
-            django_rq.enqueue(my_func, foo, bar=baz)
+        # if 'wowprof-alts-scan-professions-button' in request.POST:
+        #     foo = ['1', '2']
+        #     baz = ['apple']
+        #     django_rq.enqueue(my_func, foo, bar=baz)
 
     alt_objects = []
     if 'altId' in request.session:
         alt_objects = Alt.objects.select_related('altcustom').filter(pk__in=request.session['altId'])
-        # print(alt_objects)
-        # print(len(alt_objects))
         for alt in alt_objects:
             try:
                 pass
@@ -203,114 +157,112 @@ def wowProfAltsMoreDetails(request, name, realm):
         equipment_objs = AltEquipment.objects.prefetch_related('equipment').filter(alt=alt_obj)
     except AltEquipment.DoesNotExist:
         equipment_objs = []
-    # tempInstance = get_object_or_404(Alt, altName=name, altRealm=realm)
-    # tempInstance2 = get_object_or_404(AltMedia, alt=tempAlt)
-    # tempData = tempInstance2.mainRaw
     return render(request, "wowprof/wowprof_alts_more.html", {'alt': alt_obj, 'media': media_obj, 'equipment': equipment_objs})
 
 
 def wowProfRequiem(request):
-    if request.method == 'POST':
-        if 'wowprof-requiem-refresh-button' in request.POST:
-            Requiem.objects.all().delete()
-            clientToken = getToken(BLIZZ_CLIENT, BLIZZ_SECRET)
-            anObj = {'access_token': clientToken, 'namespace': 'profile-eu', 'locale': 'en_US'}
-            url = 'https://eu.api.blizzard.com/data/wow/guild/doomhammer/requiem/roster'
-            y = requests.get(url, params=anObj)
-            if y.status_code == 200:
-                reqData = y.json()['members']
-                for key in reqData:
-                    if (key['rank'] == 0) or (key['rank'] == 1) or (key['rank'] == 4) or (key['rank'] == 5) or (key['rank'] == 6):
-                        reqId = key['character']['id']
-                        # reqLevel=key['character']['level']
-                        reqName = key['character']['name']
-                        tempReqRealm = key['character']['realm']['slug']
-                        reqRealm = tempReqRealm.capitalize()
-                        # reqClass=key['character']['playable_class']['id']
-                        reqRank = key['rank']
-                        url = 'https://eu.api.blizzard.com/profile/wow/character/' + tempReqRealm + '/' + reqName.lower()
-                        x = requests.get(url, params=anObj)
-                        if x.status_code == 200:
-                            reqAltData = x.json()
-                            if Alt.objects.filter(altId=reqId).exists():
-                                q = get_object_or_404(Alt, altId=reqId)
-                                q.altLevel = reqAltData['level']
-                                q.altName = reqAltData['name']
-                                q.altRealm = reqAltData['realm']['name']
-                                q.altClass = reqAltData['character_class']['name']
-                                q.altRace = reqAltData['race']['name']
-                                q.altGender = reqAltData['gender']['name']
-                                q.altFaction = reqAltData['faction']['name']
-                                q.altExpiryDate = timezone.now() + datetime.timedelta(days=30)
-                                q.save()
-                            else:       # Alt.objects.filter(altId=key['id']).exists():
-                                p = Alt.objects.create(
-                                    altId=reqId,
-                                    altLevel=reqAltData['level'],
-                                    altName=reqAltData['name'],
-                                    altRealm=reqAltData['realm']['name'],
-                                    altClass=reqAltData['character_class']['name'],
-                                    altRace=reqAltData['race']['name'],
-                                    altGender=reqAltData['gender']['name'],
-                                    altFaction=reqAltData['faction']['name'],
-                                    altExpiryDate=timezone.now() + datetime.timedelta(days=30),
-                                )
-                            tempReqAlt = get_object_or_404(Alt, altId=reqId)
-                            if Requiem.objects.filter(alt=tempReqAlt).exists():
-                                q = get_object_or_404(Requiem, alt=reqId)
-                                # q.reqLevel=reqLevel
-                                q.reqName = reqName
-                                q.reqRealm = reqRealm
-                                # q.reqClass=reqClass
-                                q.reqRank = reqRank
-                                q.reqExpiryDate = timezone.now() + datetime.timedelta(days=30)
-                                q.save()
-                            else:       # Alt.objects.filter(altId=key['id']).exists():
-                                p = Requiem.objects.create(
-                                    alt=tempReqAlt,
-                                    # reqLevel=reqLevel,
-                                    reqName=reqName,
-                                    reqRealm=reqRealm,
-                                    # reqClass=reqClass,
-                                    reqRank=reqRank,
-                                    reqExpiryDate=timezone.now() + datetime.timedelta(days=30)
-                                )
-                            print(reqName)
-    altData = []
-    reqAlts = Requiem.objects.all()
-    for alt in reqAlts:
-        tempInstance = get_object_or_404(Alt, altId=alt.alt_id)
-        # tempInstance=Alt.objects.filter(altId=alt)
-        rank = alt.reqRank
-        name = tempInstance.altName
-        nameSlug = name.lower()
-        realm = tempInstance.altRealm
-        realmSlug = realm.lower()
-        altClass = tempInstance.altClass
-        clothRank = leatherRank = mailRank = plateRank = miscRank = ['N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']
-        profession1 = profession1Data = profession2 = profession2Data = 'Missing'
-        # profession2='Missing'
-        if AltProfession.objects.filter(alt=tempInstance).exists():
-            tempProf = AltProfession.objects.filter(alt=tempInstance)
-            # if tempProf.count() == 1:
-            profession1 = tempProf[0].professionName
-            profession1Data = tempProf[0].professionData
-            # print(profession1Data)
-            # profession1Slug=profession1.lower()
-            if tempProf.count() > 1:
-                profession2 = tempProf[1].professionName
-                profession2Data = tempProf[1].professionData
-                # profession2Slug=profession2.lower()
+    pass
+#     if request.method == 'POST':
+#         if 'wowprof-requiem-refresh-button' in request.POST:
+#             Requiem.objects.all().delete()
+#             clientToken = getToken(BLIZZ_CLIENT, BLIZZ_SECRET)
+#             anObj = {'access_token': clientToken, 'namespace': 'profile-eu', 'locale': 'en_US'}
+#             url = 'https://eu.api.blizzard.com/data/wow/guild/doomhammer/requiem/roster'
+#             y = requests.get(url, params=anObj)
+#             if y.status_code == 200:
+#                 reqData = y.json()['members']
+#                 for key in reqData:
+#                     if (key['rank'] == 0) or (key['rank'] == 1) or (key['rank'] == 4) or (key['rank'] == 5) or (key['rank'] == 6):
+#                         reqId = key['character']['id']
+#                         # reqLevel=key['character']['level']
+#                         reqName = key['character']['name']
+#                         tempReqRealm = key['character']['realm']['slug']
+#                         reqRealm = tempReqRealm.capitalize()
+#                         # reqClass=key['character']['playable_class']['id']
+#                         reqRank = key['rank']
+#                         url = 'https://eu.api.blizzard.com/profile/wow/character/' + tempReqRealm + '/' + reqName.lower()
+#                         x = requests.get(url, params=anObj)
+#                         if x.status_code == 200:
+#                             reqAltData = x.json()
+#                             if Alt.objects.filter(altId=reqId).exists():
+#                                 q = get_object_or_404(Alt, altId=reqId)
+#                                 q.altLevel = reqAltData['level']
+#                                 q.altName = reqAltData['name']
+#                                 q.altRealm = reqAltData['realm']['name']
+#                                 q.altClass = reqAltData['character_class']['name']
+#                                 q.altRace = reqAltData['race']['name']
+#                                 q.altGender = reqAltData['gender']['name']
+#                                 q.altFaction = reqAltData['faction']['name']
+#                                 q.altExpiryDate = timezone.now() + datetime.timedelta(days=30)
+#                                 q.save()
+#                             else:       # Alt.objects.filter(altId=key['id']).exists():
+#                                 p = Alt.objects.create(
+#                                     altId=reqId,
+#                                     altLevel=reqAltData['level'],
+#                                     altName=reqAltData['name'],
+#                                     altRealm=reqAltData['realm']['name'],
+#                                     altClass=reqAltData['character_class']['name'],
+#                                     altRace=reqAltData['race']['name'],
+#                                     altGender=reqAltData['gender']['name'],
+#                                     altFaction=reqAltData['faction']['name'],
+#                                     altExpiryDate=timezone.now() + datetime.timedelta(days=30),
+#                                 )
+#                             tempReqAlt = get_object_or_404(Alt, altId=reqId)
+#                             if Requiem.objects.filter(alt=tempReqAlt).exists():
+#                                 q = get_object_or_404(Requiem, alt=reqId)
+#                                 # q.reqLevel=reqLevel
+#                                 q.reqName = reqName
+#                                 q.reqRealm = reqRealm
+#                                 # q.reqClass=reqClass
+#                                 q.reqRank = reqRank
+#                                 q.reqExpiryDate = timezone.now() + datetime.timedelta(days=30)
+#                                 q.save()
+#                             else:       # Alt.objects.filter(altId=key['id']).exists():
+#                                 p = Requiem.objects.create(
+#                                     alt=tempReqAlt,
+#                                     # reqLevel=reqLevel,
+#                                     reqName=reqName,
+#                                     reqRealm=reqRealm,
+#                                     # reqClass=reqClass,
+#                                     reqRank=reqRank,
+#                                     reqExpiryDate=timezone.now() + datetime.timedelta(days=30)
+#                                 )
+#                             print(reqName)
+#     altData = []
+#     reqAlts = Requiem.objects.all()
+#     for alt in reqAlts:
+#         tempInstance = get_object_or_404(Alt, altId=alt.alt_id)
+#         # tempInstance=Alt.objects.filter(altId=alt)
+#         rank = alt.reqRank
+#         name = tempInstance.altName
+#         nameSlug = name.lower()
+#         realm = tempInstance.altRealm
+#         realmSlug = realm.lower()
+#         altClass = tempInstance.altClass
+#         clothRank = leatherRank = mailRank = plateRank = miscRank = ['N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']
+#         profession1 = profession1Data = profession2 = profession2Data = 'Missing'
+#         # profession2='Missing'
+#         if AltProfession.objects.filter(alt=tempInstance).exists():
+#             tempProf = AltProfession.objects.filter(alt=tempInstance)
+#             # if tempProf.count() == 1:
+#             profession1 = tempProf[0].professionName
+#             profession1Data = tempProf[0].professionData
+#             # print(profession1Data)
+#             # profession1Slug=profession1.lower()
+#             if tempProf.count() > 1:
+#                 profession2 = tempProf[1].professionName
+#                 profession2Data = tempProf[1].professionData
+#                 # profession2Slug=profession2.lower()
 
-            # else:
-            #   profession1=tempProf[0].professionName
-            #   profession2=tempProf[1].professionName
+#             # else:
+#             #   profession1=tempProf[0].professionName
+#             #   profession2=tempProf[1].professionName
 
-        # for prof in profession1Data:
+#         # for prof in profession1Data:
 
-        # for prof in profession2Data:
+#         # for prof in profession2Data:
 
-        tempAlt = ReqAltClass(name, realm, altClass, rank, clothRank, leatherRank, mailRank, plateRank, miscRank, profession1, profession2)
-        altData.append(tempAlt)
-    # tempMyObj={'name':'name'}
-    return render(request, "wowprof/wowprof_requiem.html", {'altData': altData})
+#         tempAlt = ReqAltClass(name, realm, altClass, rank, clothRank, leatherRank, mailRank, plateRank, miscRank, profession1, profession2)
+#         altData.append(tempAlt)
+#     # tempMyObj={'name':'name'}
+#     return render(request, "wowprof/wowprof_requiem.html", {'altData': altData})

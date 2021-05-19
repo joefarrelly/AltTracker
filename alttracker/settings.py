@@ -28,9 +28,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env("DEBUG_OPTION")
 
-ALLOWED_HOSTS = ['localhost', env("HOST_IP"), '127.0.0.1', '192.168.1.12', '192.168.1.4', '2.98.43.12']
+ALLOWED_HOSTS = ['localhost', env("HOST_IP"), '127.0.0.1', '192.168.1.12', '192.168.1.4', '2.98.43.12', 'fazztools.hopto.org']
 
 
 # Application definition
@@ -134,7 +134,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 # STATICFILES_DIR = [os.path.join(BASE_DIR, 'static'),]
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 # print ("base dir path", BASE_DIR)
 # print ("static url", STATIC_URL)
@@ -147,4 +147,16 @@ RQ_QUEUES = {
         'DB': 0,
         'DEFAULT_TIMEOUT': 360,
     },
+    # 'high': {
+    #     'HOST': 'localhost',
+    #     'PORT': 6379,
+    #     'DB': 0,
+    #     'DEFAULT_TIMEOUT': 360,
+    # },
+    # 'low': {
+    #     'HOST': 'localhost',
+    #     'PORT': 6379,
+    #     'DB': 0,
+    #     'DEFAULT_TIMEOUT': 360,
+    # },
 }
