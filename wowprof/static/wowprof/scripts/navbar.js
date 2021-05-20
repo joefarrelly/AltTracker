@@ -220,9 +220,9 @@ function sortTable(n) {
   }
 }
 
-function sortTableReq(n) {
+function sortTableNum(n) {
   var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-  table = document.getElementById("req-alts-table");
+  table = document.getElementById("alts-table");
   switching = true;
   // Set the sorting direction to ascending:
   dir = "asc";
@@ -244,13 +244,13 @@ function sortTableReq(n) {
       /* Check if the two rows should switch place,
       based on the direction, asc or desc: */
       if (dir == "asc") {
-        if (x.innerText.toLowerCase() > y.innerText.toLowerCase()) {
+        if (parseInt(x.innerText) > parseInt(y.innerText)) {
           // If so, mark as a switch and break the loop:
           shouldSwitch = true;
           break;
         }
       } else if (dir == "desc") {
-        if (x.innerText.toLowerCase() < y.innerText.toLowerCase()) {
+        if (parseInt(x.innerText) < parseInt(y.innerText)) {
           // If so, mark as a switch and break the loop:
           shouldSwitch = true;
           break;
