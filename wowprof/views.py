@@ -155,9 +155,14 @@ def wowProfAltsMoreDetails(request, name, realm):
         media_obj = []
     try:
         equipment_objs = AltEquipment.objects.prefetch_related('equipment').filter(alt=alt_obj)
+        filtered_equipment_objs = {}
+        for item in equipment_objs:
+            temp = {item.slot: item}
+            print(temp)
+            filtered_equipment_objs[item.slot] = item
     except AltEquipment.DoesNotExist:
-        equipment_objs = []
-    return render(request, "wowprof/wowprof_alts_more.html", {'alt': alt_obj, 'media': media_obj, 'equipment': equipment_objs})
+        filtered_equipment_objs = {}
+    return render(request, "wowprof/wowprof_alts_more.html", {'alt': alt_obj, 'media': media_obj, 'equipment': filtered_equipment_objs})
 
 
 def wowProfRequiem(request):

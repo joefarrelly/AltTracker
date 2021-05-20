@@ -172,7 +172,7 @@ def getAltData(name, realm, alt_obj):
                         try:
                             obj = Equipment.objects.get(item_id=item['item']['id'])
                             obj.name = item['name']
-                            obj.slot = item['slot']['name']
+                            obj.slot = item['slot']['type']
                             obj.quality = item['quality']['name']
                             obj.armour_type = item['item_subclass']['name']
                             # obj.icon = media_url
@@ -191,7 +191,7 @@ def getAltData(name, realm, alt_obj):
                                 item_id=item['item']['id'],
                                 name=item['name'],
                                 # required_level=required_level,
-                                slot=item['slot']['name'],
+                                slot=item['slot']['type'],
                                 quality=item['quality']['name'],
                                 armour_type=item['item_subclass']['name'],
                                 icon=media_url
@@ -201,7 +201,7 @@ def getAltData(name, realm, alt_obj):
                         else:
                             stats = 'None'
                         try:
-                            obj1 = AltEquipment.objects.get(alt=alt_obj, slot=item['slot']['name'])
+                            obj1 = AltEquipment.objects.get(alt=alt_obj, slot=item['slot']['type'])
                             obj1.item_level = item['level']['value']
                             obj1.stats = stats
                             obj1.altEquipmentExpiryDate = timezone.now() + datetime.timedelta(days=30)
@@ -213,7 +213,7 @@ def getAltData(name, realm, alt_obj):
                                 item_level=item['level']['value'],
                                 stats=stats,
                                 altEquipmentExpiryDate=timezone.now() + datetime.timedelta(days=30),
-                                slot=item['slot']['name']
+                                slot=item['slot']['type']
                             )
                 except KeyError:
                     print(name + '-' + realm + ' has no equipment data')
