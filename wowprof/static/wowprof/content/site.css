@@ -167,11 +167,17 @@ img[src=""] {
     border-width: 4px;
     border-radius: 4px;
 }
+.uncommon-text{
+    color: #FFFFFF;
+}
 .common{
     border: ridge;
     border-color: #1EFF00;
     border-width: 4px;
     border-radius: 4px;
+}
+.common-text{
+    color: #1EFF00;
 }
 .rare{
     border: ridge;
@@ -179,11 +185,17 @@ img[src=""] {
     border-width: 4px;
     border-radius: 4px;
 }
+.rare-text{
+    color: #0070DD;
+}
 .epic{
     border: ridge;
     border-color: #A335EE;
     border-width: 4px;
     border-radius: 4px;
+}
+.epic-text{
+    color: #A335EE;
 }
 .legendary{
     border: ridge;
@@ -191,17 +203,26 @@ img[src=""] {
     border-width: 4px;
     border-radius: 4px;
 }
+.legendary-text{
+    color: #FF8000;
+}
 .artifact{
     border: ridge;
     border-color: #E6CC80;
     border-width: 4px;
     border-radius: 4px;
 }
+.artifact-text{
+    color: #E6CC80;
+}
 .heirloom{
     border: ridge;
     border-color: #00CCFF;
     border-width: 4px;
     border-radius: 4px;
+}
+.heirloom-text{
+    color: #00CCFF;
 }
 
 /*#bgtest{

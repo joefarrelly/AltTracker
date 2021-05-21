@@ -51,7 +51,7 @@ def getAltData(name, realm, alt_obj):
         'https://eu.api.blizzard.com/profile/wow/character/' + realm + '/' + quote(name) + '/character-media',
         'https://eu.api.blizzard.com/profile/wow/character/' + realm + '/' + quote(name) + '/equipment'
     ]
-    mount = garrison = mage_tower = 0
+    mount = garrison = mage_tower = shadowmourne = 0
     current_professions = []
     for url in urls:
         response = requests.get(url, params=params)
@@ -120,6 +120,8 @@ def getAltData(name, realm, alt_obj):
                     for quest in data:
                         if quest['id'] == 36848:
                             mage_tower += 1
+                        if quest['id'] == 24914:
+                            shadowmourne += 1
                     try:
                         obj = AltQuestCompleted.objects.get(alt=alt_obj)
                         obj.questCompletedData = data
@@ -233,11 +235,16 @@ def getAltData(name, realm, alt_obj):
                 except KeyError:
                     print(name + '-' + realm + ' has no equipment data')
                     print(KeyError)
+    if alt_obj.altFaction == 'Horde':
+        mage_tower = 2
+    if (alt_obj.altClass != 1) and (alt_obj.altClass != 2) and (alt_obj.altClass != 6):
+        shadowmourne = 2
     try:
         obj = AltCustom.objects.get(alt=alt_obj)
         obj.mount = mount
         obj.garrison = garrison + 1
         obj.mageTower = mage_tower
+        obj.shadowmourne = shadowmourne
         # obj.profession1 = getattr(AltCustom, (next(iter(current_professions[0:1] or []), 'Missing')).upper())
         obj.profession1 = next(iter(current_professions[0:1] or []), 0)
         # obj.profession2 = getattr(AltCustom, (next(iter(current_professions[1:2] or []), 'Missing')).upper())

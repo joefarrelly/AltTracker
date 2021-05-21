@@ -33,6 +33,7 @@
                     <th style="width:auto">Mount <i class="fas fa-sort"></th>
                     <th style="width:auto">Garrison <i class="fas fa-sort"></th>
                     <th style="width:auto">MT</th>
+                    <th style="width:auto">SM</th>
                     <th style="width:auto">Prof1 <i class="fas fa-sort"></i></th>
                     <th style="width:auto">Prof2 <i class="fas fa-sort"></i></th>
                     <th style="width:auto">More</th>
@@ -52,6 +53,7 @@
                     <td>{{ a.altcustom.get_mount_display }}</td>
                     <td>{{ a.altcustom.get_garrison_display }}</td>
                     <td>{{ a.altcustom.get_mageTower_display }}</td>
+                    <td>{{ a.altcustom.get_shadowmourne_display }}</td>
                     {% if a.altcustom.get_profession1_display == 'Missing' or not a.altcustom %}
                         <td><a>{{ a.altcustom.get_profession1_display }}</a></td>
                     {% else %}

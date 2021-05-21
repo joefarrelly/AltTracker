@@ -101,11 +101,23 @@ class AltCustom(models.Model):
 
     NO = 0
     YES = 1
+    NA = 2
     MAGE_TOWER = (
         (NO, 'No'),
         (YES, 'Yes'),
+        (NA, 'N/A'),
     )
-    mageTower = models.PositiveSmallIntegerField(choices=MAGE_TOWER, default=NO)
+    mageTower = models.PositiveSmallIntegerField(choices=MAGE_TOWER, default=NA)
+
+    NO = 0
+    YES = 1
+    NA = 2
+    SHADOWMOURNE = (
+        (NO, 'No'),
+        (YES, 'Yes'),
+        (NA, 'N/A'),
+    )
+    shadowmourne = models.PositiveSmallIntegerField(choices=SHADOWMOURNE, default=NA)
 
     class Profession(models.IntegerChoices):
         MISSING = 0, _('Missing')
