@@ -48,10 +48,11 @@ def getAltData(name, realm, alt_obj):
         'https://eu.api.blizzard.com/profile/wow/character/' + realm + '/' + quote(name) + '/professions',
         'https://eu.api.blizzard.com/profile/wow/character/' + realm + '/' + quote(name) + '/achievements',
         'https://eu.api.blizzard.com/profile/wow/character/' + realm + '/' + quote(name) + '/quests/completed',
+        'https://eu.api.blizzard.com/profile/wow/character/' + realm + '/' + quote(name) + '/quests',
         'https://eu.api.blizzard.com/profile/wow/character/' + realm + '/' + quote(name) + '/character-media',
         'https://eu.api.blizzard.com/profile/wow/character/' + realm + '/' + quote(name) + '/equipment'
     ]
-    mount = garrison = mage_tower = shadowmourne = 0
+    mount = garrison = mage_tower = shadowmourne = balance_of_power = 0
     current_professions = []
     for url in urls:
         response = requests.get(url, params=params)
@@ -88,6 +89,8 @@ def getAltData(name, realm, alt_obj):
                     # mount = garrison = 0
                     data = response.json()['achievements']
                     for achievement in data:
+                        # if achievement['id'] == 10459 and achievement['criteria']['is_completed']:
+                        #     balance_of_power += 1
                         if achievement['id'] == 891 and achievement['criteria']['is_completed']:  # riding skill slow ground
                             mount += 1
                         elif achievement['id'] == 889 and achievement['criteria']['is_completed']:  # riding skill fast ground
@@ -122,6 +125,8 @@ def getAltData(name, realm, alt_obj):
                             mage_tower += 1
                         if quest['id'] == 24914:
                             shadowmourne += 1
+                        # if quest['id'] == 43533:
+                        #     balance_of_power += 1
                     try:
                         obj = AltQuestCompleted.objects.get(alt=alt_obj)
                         obj.questCompletedData = data
@@ -135,6 +140,14 @@ def getAltData(name, realm, alt_obj):
                         )
                 except KeyError:
                     print(name + '-' + realm + ' has no quest data')
+            elif 'quests' in url:
+                try:
+                    data = response.json()['in_progress']
+                    for quest in data:
+                        if quest['id'] == 24548:
+                            shadowmourne = 3
+                except KeyError:
+                    print(name + '-' + realm + ' has no active quest data')
             elif 'character-media' in url:
                 try:
                     avatar = inset = main = mainRaw = 'No media'
@@ -245,6 +258,7 @@ def getAltData(name, realm, alt_obj):
         obj.garrison = garrison + 1
         obj.mageTower = mage_tower
         obj.shadowmourne = shadowmourne
+        obj.balance_of_power = balance_of_power
         # obj.profession1 = getattr(AltCustom, (next(iter(current_professions[0:1] or []), 'Missing')).upper())
         obj.profession1 = next(iter(current_professions[0:1] or []), 0)
         # obj.profession2 = getattr(AltCustom, (next(iter(current_professions[1:2] or []), 'Missing')).upper())
@@ -257,6 +271,8 @@ def getAltData(name, realm, alt_obj):
             mount=mount,
             garrison=garrison + 1,
             mageTower=mage_tower,
+            shadowmourne=shadowmourne,
+            balance_of_power=balance_of_power,
             # profession1=getattr(AltCustom, (next(iter(current_professions[0:1] or []), 'Missing')).upper()),
             profession1=next(iter(current_professions[0:1] or []), 0),
             # profession2=getattr(AltCustom, (next(iter(current_professions[1:2] or []), 'Missing')).upper()),

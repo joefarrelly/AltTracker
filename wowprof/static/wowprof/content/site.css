@@ -147,6 +147,19 @@ th, td {
 .No{
     background-color: #E74343;
 }
+.No\28Q\29{
+    background-color: orange;
+}
+
+.Level3{
+    background-color: #4CE87C 
+}
+.Level2{
+    background-color: #E74343;
+}
+.Level1{
+    background-color: #E74343;
+}
 
 .btn-secondary{
     margin:0 10px 0 10px;

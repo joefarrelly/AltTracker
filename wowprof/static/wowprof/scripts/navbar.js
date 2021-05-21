@@ -19,6 +19,29 @@ $(function() {
     });
 });
 
+// garrison
+$(function() {
+    $('#alts-table td:nth-child(8)').each(function(index) {
+        var classColor = ['Level3','Level2', 'Level1'];
+        var tempclassName = $(this).text();
+        var className = tempclassName.replace(/\s+/g, '');
+        var tempMo = $(this).parent("tr");
+        var tempMo2 = tempMo[0].cells;
+        for (var i = 0; i < classColor.length; i++) {
+            if (className === classColor[i]) {
+                var counter = 0
+                $(this).parent("tr").children().each(function(index) {
+                    if (counter > 6 && counter < 8) {
+                        $(this).addClass(classColor[i]);
+                    }
+                    counter++;
+                })
+            }
+        }
+    });
+});
+
+// mage tower
 $(function() {
     $('#alts-table td:nth-child(9)').each(function(index) {
         var classColor = ['Yes','No'];
@@ -29,7 +52,7 @@ $(function() {
             if (className === classColor[i]) {
                 var counter = 0
                 $(this).parent("tr").children().each(function(index) {
-                    if (counter > 6 && counter < 9) {
+                    if (counter > 7 && counter < 9) {
                         $(this).addClass(classColor[i]);
                     }
                     counter++;
@@ -39,9 +62,10 @@ $(function() {
     });
 });
 
+// shadowmourne
 $(function() {
     $('#alts-table td:nth-child(10)').each(function(index) {
-        var classColor = ['Yes','No'];
+        var classColor = ['Yes','No','No(Q)'];
         var className = $(this).text();
         var tempMo = $(this).parent("tr");
         var tempMo2 = tempMo[0].cells;
@@ -50,6 +74,27 @@ $(function() {
                 var counter = 0
                 $(this).parent("tr").children().each(function(index) {
                     if (counter > 8 && counter < 10) {
+                        $(this).addClass(classColor[i]);
+                    }
+                    counter++;
+                })
+            }
+        }
+    });
+});
+
+// balance of power
+$(function() {
+    $('#alts-table td:nth-child(11)').each(function(index) {
+        var classColor = ['Yes','No'];
+        var className = $(this).text();
+        var tempMo = $(this).parent("tr");
+        var tempMo2 = tempMo[0].cells;
+        for (var i = 0; i < classColor.length; i++) {
+            if (className === classColor[i]) {
+                var counter = 0
+                $(this).parent("tr").children().each(function(index) {
+                    if (counter > 9 && counter < 11) {
                         $(this).addClass(classColor[i]);
                     }
                     counter++;
