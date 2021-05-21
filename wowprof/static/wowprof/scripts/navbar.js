@@ -5,30 +5,15 @@ $(function() {
         var className = tempclassName.replace(/\s+/g, '');
         var tempMo = $(this).parent("tr");
         var tempMo2 = tempMo[0].cells;
-        // console.log(tempMo2);
         for (var i = 0; i < classColor.length; i++) {
             if (className === classColor[i]) {
-                // $(this).addClass(classColor[i]);
-                // for (var j = 1; j < 4; j++) {
-                    // console.log($(this).parent("tr")[0].cells[j]);
-                    //console.log($(this));
-                    //console.log($(this).parent("tr"));
                 var counter = 0
-                    // console.log($(this).parent("tr").children());
-                    // $(this).parent("tr").children().addClass(classColor[i]);
                 $(this).parent("tr").children().each(function(index) {
                     if (counter > 0 && counter < 6) {
                         $(this).addClass(classColor[i]);
                     }
                     counter++;
                 })
-                    // console.log($(this).parent("tr")[0].cells[j]); //.eq(j));
-                    // $(this).parent("tr")[0].cells[j];
-                // }
-                // for (var j = 0; j < 3; j++) {
-                //     tempRow[j].addClass(classColor[i]);
-                // }
-                // $(this).parent("tr").addClass(classColor[i]);
             }
         }
     });
@@ -40,240 +25,57 @@ $(function() {
         var className = $(this).text();
         var tempMo = $(this).parent("tr");
         var tempMo2 = tempMo[0].cells;
-        // console.log(tempMo2);
         for (var i = 0; i < classColor.length; i++) {
             if (className === classColor[i]) {
-                // $(this).addClass(classColor[i]);
-                // for (var j = 1; j < 4; j++) {
-                    // console.log($(this).parent("tr")[0].cells[j]);
-                    //console.log($(this));
-                    //console.log($(this).parent("tr"));
                 var counter = 0
-                    // console.log($(this).parent("tr").children());
-                    // $(this).parent("tr").children().addClass(classColor[i]);
                 $(this).parent("tr").children().each(function(index) {
                     if (counter > 6 && counter < 9) {
                         $(this).addClass(classColor[i]);
                     }
                     counter++;
                 })
-                    // console.log($(this).parent("tr")[0].cells[j]); //.eq(j));
-                    // $(this).parent("tr")[0].cells[j];
-                // }
-                // for (var j = 0; j < 3; j++) {
-                //     tempRow[j].addClass(classColor[i]);
-                // }
-                // $(this).parent("tr").addClass(classColor[i]);
             }
         }
     });
 });
 
-$(function() {
-    $('#req-alts-table td:nth-child(4)').each(function(index) {
-        var classColor = ['Warrior','Paladin','Hunter','Rogue','Priest','Shaman','Mage','Warlock','Monk','Druid','DemonHunter','DeathKnight'];
-        var tempclassName = $(this).text();
-        var className = tempclassName.replace(/\s+/g, '');
-        var tempMo = $(this).parent("tr");
-        var tempMo2 = tempMo[0].cells;
-        // console.log(tempMo2);
-        for (var i = 0; i < classColor.length; i++) {
-            if (className === classColor[i]) {
-                // $(this).addClass(classColor[i]);
-                // for (var j = 1; j < 4; j++) {
-                    // console.log($(this).parent("tr")[0].cells[j]);
-                    //console.log($(this));
-                    //console.log($(this).parent("tr"));
-                var counter = 0
-                    // console.log($(this).parent("tr").children());
-                    // $(this).parent("tr").children().addClass(classColor[i]);
-                $(this).parent("tr").children().each(function(index) {
-                    if (counter > 0 && counter < 4) {
-                        $(this).addClass(classColor[i]);
-                    }
-                    counter++;
-                })
-                    // console.log($(this).parent("tr")[0].cells[j]); //.eq(j));
-                    // $(this).parent("tr")[0].cells[j];
-                // }
-                // for (var j = 0; j < 3; j++) {
-                //     tempRow[j].addClass(classColor[i]);
-                // }
-                // $(this).parent("tr").addClass(classColor[i]);
-            }
-        }
-    });
-});
-
-$(function() {
-    $('.prof-req-alts-table td:nth-child(4)').each(function(index) {
-        var classColor = ['Warrior','Paladin','Hunter','Rogue','Priest','Shaman','Mage','Warlock','Monk','Druid','DemonHunter','DeathKnight'];
-        var tempclassName = $(this).text();
-        var className = tempclassName.replace(/\s+/g, '');
-        var tempMo = $(this).parent("tr");
-        var tempMo2 = tempMo[0].cells;
-        // console.log(tempMo2);
-        for (var i = 0; i < classColor.length; i++) {
-            if (className === classColor[i]) {
-                // $(this).addClass(classColor[i]);
-                // for (var j = 1; j < 4; j++) {
-                    // console.log($(this).parent("tr")[0].cells[j]);
-                    //console.log($(this));
-                    //console.log($(this).parent("tr"));
-                var counter = 0
-                    // console.log($(this).parent("tr").children());
-                    // $(this).parent("tr").children().addClass(classColor[i]);
-                $(this).parent("tr").children().each(function(index) {
-                    if (counter > 0 && counter < 4) {
-                        $(this).addClass(classColor[i]);
-                    }
-                    counter++;
-                })
-                    // console.log($(this).parent("tr")[0].cells[j]); //.eq(j));
-                    // $(this).parent("tr")[0].cells[j];
-                // }
-                // for (var j = 0; j < 3; j++) {
-                //     tempRow[j].addClass(classColor[i]);
-                // }
-                // $(this).parent("tr").addClass(classColor[i]);
-            }
-        }
-    });
-});
-
-// $(function() {
-//     // console.log(data);
-//     // var newData = JSON.parse(data);
-//     $('.alt-profession-table td:nth-child(3)').each(function(){
-//         // console.log($(this));
-//         // console.log(this);
-//         // console.log($(this).children());
-//         $(this).children().each(function() {
-//             console.log($(this).attr("href"));
-//         })
-//         console.log($(this).prev()[0].innerText);
-//         console.log(data);
-//         // console.log(data);
-//         // this.href += 'anID';
-//     })
-// })
-
-// $(function() {
-//     $('#alts-table tr').each(function(index) {
-//         console.log($(this));
-//     })
-// })
-
-
-function sortTable(n) {
-  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-  table = document.getElementById("alts-table");
-  switching = true;
-  // Set the sorting direction to ascending:
-  dir = "asc";
-  /* Make a loop that will continue until
-  no switching has been done: */
-  while (switching) {
-    // Start by saying: no switching is done:
-    switching = false;
-    rows = table.rows;
-    /* Loop through all table rows (except the
-    first, which contains table headers): */
-    for (i = 1; i < (rows.length - 1); i++) {
-      // Start by saying there should be no switching:
-      shouldSwitch = false;
-      /* Get the two elements you want to compare,
-      one from current row and one from the next: */
-      x = rows[i].getElementsByTagName("TD")[n];
-      y = rows[i + 1].getElementsByTagName("TD")[n];
-      /* Check if the two rows should switch place,
-      based on the direction, asc or desc: */
-      if (dir == "asc") {
-        if (x.innerText.toLowerCase() > y.innerText.toLowerCase()) {
-          // If so, mark as a switch and break the loop:
-          shouldSwitch = true;
-          break;
-        }
-      } else if (dir == "desc") {
-        if (x.innerText.toLowerCase() < y.innerText.toLowerCase()) {
-          // If so, mark as a switch and break the loop:
-          shouldSwitch = true;
-          break;
-        }
-      }
-    }
-    if (shouldSwitch) {
-      /* If a switch has been marked, make the switch
-      and mark that a switch has been done: */
-      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-      switching = true;
-      // Each time a switch is done, increase this count by 1:
-      switchcount ++;
-    } else {
-      /* If no switching has been done AND the direction is "asc",
-      set the direction to "desc" and run the while loop again. */
-      if (switchcount == 0 && dir == "asc") {
-        dir = "desc";
-        switching = true;
-      }
-    }
-  }
-}
-
-function sortTableNum(n) {
-  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-  table = document.getElementById("alts-table");
-  switching = true;
-  // Set the sorting direction to ascending:
-  dir = "asc";
-  /* Make a loop that will continue until
-  no switching has been done: */
-  while (switching) {
-    // Start by saying: no switching is done:
-    switching = false;
-    rows = table.rows;
-    /* Loop through all table rows (except the
-    first, which contains table headers): */
-    for (i = 1; i < (rows.length - 1); i++) {
-      // Start by saying there should be no switching:
-      shouldSwitch = false;
-      /* Get the two elements you want to compare,
-      one from current row and one from the next: */
-      x = rows[i].getElementsByTagName("TD")[n];
-      y = rows[i + 1].getElementsByTagName("TD")[n];
-      /* Check if the two rows should switch place,
-      based on the direction, asc or desc: */
-      if (dir == "asc") {
-        if (parseInt(x.innerText) > parseInt(y.innerText)) {
-          // If so, mark as a switch and break the loop:
-          shouldSwitch = true;
-          break;
-        }
-      } else if (dir == "desc") {
-        if (parseInt(x.innerText) < parseInt(y.innerText)) {
-          // If so, mark as a switch and break the loop:
-          shouldSwitch = true;
-          break;
-        }
-      }
-    }
-    if (shouldSwitch) {
-      /* If a switch has been marked, make the switch
-      and mark that a switch has been done: */
-      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-      switching = true;
-      // Each time a switch is done, increase this count by 1:
-      switchcount ++;
-    } else {
-      /* If no switching has been done AND the direction is "asc",
-      set the direction to "desc" and run the while loop again. */
-      if (switchcount == 0 && dir == "asc") {
-        dir = "desc";
-        switching = true;
-      }
-    }
-  }
-}
+$(document).ready(function () {
+                $('th').each(function (col) {
+                    $(this).hover(
+                            function () {
+                                $(this).addClass('focus');
+                            },
+                            function () {
+                                $(this).removeClass('focus');
+                            }
+                    );
+                    $(this).click(function () {
+                        if ($(this).is('.asc')) {
+                            $(this).removeClass('asc');
+                            $(this).addClass('desc selected');
+                            sortOrder = -1;
+                        } else {
+                            $(this).addClass('asc selected');
+                            $(this).removeClass('desc');
+                            sortOrder = 1;
+                        }
+                        $(this).siblings().removeClass('asc selected');
+                        $(this).siblings().removeClass('desc selected');
+                        var arrData = $('table').find('tbody >tr:has(td)').get();
+                        arrData.sort(function (a, b) {
+                            var val1 = $(a).children('td').eq(col).text().toUpperCase();
+                            var val2 = $(b).children('td').eq(col).text().toUpperCase();
+                            if ($.isNumeric(val1) && $.isNumeric(val2))
+                                return sortOrder == 1 ? val1 - val2 : val2 - val1;
+                            else
+                                return (val1 < val2) ? -sortOrder : (val1 > val2) ? sortOrder : 0;
+                        });
+                        $.each(arrData, function (index, row) {
+                            $('tbody').append(row);
+                        });
+                    });
+                });
+            });
 
 function sortTableSpecial(n) {
   var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;

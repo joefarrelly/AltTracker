@@ -206,7 +206,7 @@ class Equipment(models.Model):
     name = models.CharField(max_length=80)
     # required_level = models.CharField(max_length=80)
     slot = models.CharField(max_length=20)
-    quality = models.CharField(max_length=20)
+    # quality = models.CharField(max_length=20)
     armour_type = models.CharField(max_length=20)
     icon = models.CharField(max_length=100)
 
@@ -214,7 +214,7 @@ class Equipment(models.Model):
         db_table = 'alttracker_equipment'
 
     def __str__(self):
-        return '%s' % (self.name)
+        return '%s' % (self.name, self.slot)
 
 
 class AltEquipment(models.Model):
@@ -224,12 +224,15 @@ class AltEquipment(models.Model):
     item_level = models.PositiveSmallIntegerField()
     stats = models.JSONField()
     slot = models.CharField(max_length=20)
+    quality = models.CharField(max_length=20)
+    sockets = models.JSONField()
+    enchants = models.JSONField()
 
     class Meta:
         db_table = 'alttracker_altequipment'
 
     def __str__(self):
-        return '%s' % (self.alt.altName)
+        return '%s' % (self.alt.altName, self.slot)
 
 
 ######################################################################################

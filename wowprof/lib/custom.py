@@ -173,7 +173,7 @@ def getAltData(name, realm, alt_obj):
                             obj = Equipment.objects.get(item_id=item['item']['id'])
                             obj.name = item['name']
                             obj.slot = item['slot']['type']
-                            obj.quality = item['quality']['name']
+                            # obj.quality = item['quality']['name']
                             obj.armour_type = item['item_subclass']['name']
                             # obj.icon = media_url
                             obj.save()
@@ -192,7 +192,7 @@ def getAltData(name, realm, alt_obj):
                                 name=item['name'],
                                 # required_level=required_level,
                                 slot=item['slot']['type'],
-                                quality=item['quality']['name'],
+                                # quality=item['quality']['name'],
                                 armour_type=item['item_subclass']['name'],
                                 icon=media_url
                             )
@@ -200,10 +200,22 @@ def getAltData(name, realm, alt_obj):
                             stats = item['stats']
                         else:
                             stats = 'None'
+                        if 'sockets' in item:
+                            sockets = item['sockets']
+                        else:
+                            sockets = []
+                        if 'enchantments' in item:
+                            enchants = item['enchantments']
+                        else:
+                            enchants = []
                         try:
                             obj1 = AltEquipment.objects.get(alt=alt_obj, slot=item['slot']['type'])
+                            obj1.equipment = obj
                             obj1.item_level = item['level']['value']
                             obj1.stats = stats
+                            obj1.sockets = sockets
+                            obj1.quality = item['quality']['name']
+                            obj1.enchants = enchants
                             obj1.altEquipmentExpiryDate = timezone.now() + datetime.timedelta(days=30)
                             obj1.save()
                         except AltEquipment.DoesNotExist:
@@ -212,6 +224,9 @@ def getAltData(name, realm, alt_obj):
                                 equipment=obj,
                                 item_level=item['level']['value'],
                                 stats=stats,
+                                sockets=sockets,
+                                quality=item['quality']['name'],
+                                enchants=enchants,
                                 altEquipmentExpiryDate=timezone.now() + datetime.timedelta(days=30),
                                 slot=item['slot']['type']
                             )

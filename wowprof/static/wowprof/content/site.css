@@ -14,10 +14,22 @@ div.row{
     border-color: orange;
 }*/
 
+.row{
+    border: none;
+}
+
 .equipment-slot{
     display: inline-block;
     vertical-align: middle;
     padding: 10px;
+}
+
+.equipment-slot-text{
+    display: inline;
+}
+
+.enchant{
+    color: green;
 }
 
 .body-content {
@@ -151,43 +163,47 @@ img[src=""] {
 
 .uncommon{
     border: ridge;
-    border-color: grey;
+    border-color: #FFFFFF;
     border-width: 4px;
     border-radius: 4px;
 }
 .common{
     border: ridge;
-    border-color: white;
+    border-color: #1EFF00;
     border-width: 4px;
     border-radius: 4px;
 }
 .rare{
     border: ridge;
-    border-color: blue;
+    border-color: #0070DD;
     border-width: 4px;
     border-radius: 4px;
 }
 .epic{
     border: ridge;
-    border-color: purple;
+    border-color: #A335EE;
     border-width: 4px;
     border-radius: 4px;
 }
 .legendary{
     border: ridge;
-    border-color: orange;
+    border-color: #FF8000;
     border-width: 4px;
     border-radius: 4px;
 }
 .artifact{
     border: ridge;
-    border-color: orange;
+    border-color: #E6CC80;
     border-width: 4px;
     border-radius: 4px;
 }
 .heirloom{
     border: ridge;
-    border-color: lightblue;
+    border-color: #00CCFF;
     border-width: 4px;
     border-radius: 4px;
 }
+
+/*#bgtest{
+     background-image: url('../images/paperdoll/UI-PaperDoll-SlotBackground.png');
+}*/
