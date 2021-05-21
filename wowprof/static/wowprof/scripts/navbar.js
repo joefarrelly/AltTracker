@@ -65,7 +65,7 @@ $(function() {
 // shadowmourne
 $(function() {
     $('#alts-table td:nth-child(10)').each(function(index) {
-        var classColor = ['Yes','No','No(Q)'];
+        var classColor = ['Yes','No','Quest'];
         var className = $(this).text();
         var tempMo = $(this).parent("tr");
         var tempMo2 = tempMo[0].cells;
@@ -84,25 +84,25 @@ $(function() {
 });
 
 // balance of power
-$(function() {
-    $('#alts-table td:nth-child(11)').each(function(index) {
-        var classColor = ['Yes','No'];
-        var className = $(this).text();
-        var tempMo = $(this).parent("tr");
-        var tempMo2 = tempMo[0].cells;
-        for (var i = 0; i < classColor.length; i++) {
-            if (className === classColor[i]) {
-                var counter = 0
-                $(this).parent("tr").children().each(function(index) {
-                    if (counter > 9 && counter < 11) {
-                        $(this).addClass(classColor[i]);
-                    }
-                    counter++;
-                })
-            }
-        }
-    });
-});
+// $(function() {
+//     $('#alts-table td:nth-child(11)').each(function(index) {
+//         var classColor = ['Yes','No'];
+//         var className = $(this).text();
+//         var tempMo = $(this).parent("tr");
+//         var tempMo2 = tempMo[0].cells;
+//         for (var i = 0; i < classColor.length; i++) {
+//             if (className === classColor[i]) {
+//                 var counter = 0
+//                 $(this).parent("tr").children().each(function(index) {
+//                     if (counter > 9 && counter < 11) {
+//                         $(this).addClass(classColor[i]);
+//                     }
+//                     counter++;
+//                 })
+//             }
+//         }
+//     });
+// });
 
 $(document).ready(function () {
                 $('th').each(function (col) {

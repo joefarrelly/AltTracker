@@ -117,17 +117,17 @@ class AltCustom(models.Model):
         (NO, 'No'),
         (YES, 'Yes'),
         (NA, 'N/A'),
-        (NO_Q, 'No(Q)')
+        (NO_Q, 'Quest')
     )
     shadowmourne = models.PositiveSmallIntegerField(choices=SHADOWMOURNE, default=NA)
 
-    NO = 0
-    YES = 1
-    BALANCE_OF_POWER = (
-        (NO, 'No'),
-        (YES, 'Yes'),
-    )
-    balance_of_power = models.PositiveSmallIntegerField(choices=BALANCE_OF_POWER, default=NO)
+    # NO = 0
+    # YES = 1
+    # BALANCE_OF_POWER = (
+    #     (NO, 'No'),
+    #     (YES, 'Yes'),
+    # )
+    # balance_of_power = models.PositiveSmallIntegerField(choices=BALANCE_OF_POWER, default=NO)
 
     class Profession(models.IntegerChoices):
         MISSING = 0, _('Missing')

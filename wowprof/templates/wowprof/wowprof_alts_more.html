@@ -51,7 +51,7 @@
                     {% endif %}
                     </div>
                     <div class="equipment-slot">
-                        <div>{{ equipment.NECK.equipment.name }}</div>
+                        <div class="{{ equipment.NECK.quality|slug }}-text">{{ equipment.NECK.equipment.name }}</div>
                         <div>
                             <div class="equipment-slot-text">{{ equipment.NECK.item_level }}</div>
                             {% if equipment.NECK.sockets %}
@@ -78,7 +78,7 @@
                     {% endif %}
                     </div>
                     <div class="equipment-slot">
-                        <div>{{ equipment.SHOULDER.equipment.name }}</div>
+                        <div class="{{ equipment.SHOULDER.quality|slug }}-text">{{ equipment.SHOULDER.equipment.name }}</div>
                         <div>
                             <div class="equipment-slot-text">{{ equipment.SHOULDER.item_level }}</div>
                             {% if equipment.SHOULDER.sockets %}
@@ -105,7 +105,7 @@
                     {% endif %}
                     </div>
                     <div class="equipment-slot">
-                        <div>{{ equipment.BACK.equipment.name }}</div>
+                        <div class="{{ equipment.BACK.quality|slug }}-text">{{ equipment.BACK.equipment.name }}</div>
                         <div>
                             <div class="equipment-slot-text">{{ equipment.BACK.item_level }}</div>
                             {% if equipment.BACK.sockets %}
@@ -132,7 +132,7 @@
                     {% endif %}
                     </div>
                     <div class="equipment-slot">
-                        <div>{{ equipment.CHEST.equipment.name }}</div>
+                        <div class="{{ equipment.CHEST.quality|slug }}-text">{{ equipment.CHEST.equipment.name }}</div>
                         <div>
                             <div class="equipment-slot-text">{{ equipment.CHEST.item_level }}</div>
                             {% if equipment.CHEST.sockets %}
@@ -159,7 +159,7 @@
                     {% endif %}
                     </div>
                     <div class="equipment-slot">
-                        <div>{{ equipment.SHIRT.equipment.name }}</div>
+                        <div class="{{ equipment.SHIRT.quality|slug }}-text">{{ equipment.SHIRT.equipment.name }}</div>
                         <div>
                             <div class="equipment-slot-text">{{ equipment.SHIRT.item_level }}</div>
                             {% if equipment.SHIRT.sockets %}
@@ -186,7 +186,7 @@
                     {% endif %}
                     </div>
                     <div class="equipment-slot">
-                        <div>{{ equipment.TABARD.equipment.name }}</div>
+                        <div class="{{ equipment.TABARD.quality|slug }}-text">{{ equipment.TABARD.equipment.name }}</div>
                         <div>
                             <div class="equipment-slot-text">{{ equipment.TABARD.item_level }}</div>
                             {% if equipment.TABARD.sockets %}
@@ -213,7 +213,7 @@
                     {% endif %}
                     </div>
                     <div class="equipment-slot">
-                        <div>{{ equipment.WRIST.equipment.name }}</div>
+                        <div class="{{ equipment.WRIST.quality|slug }}-text">{{ equipment.WRIST.equipment.name }}</div>
                         <div>
                             <div class="equipment-slot-text">{{ equipment.WRIST.item_level }}</div>
                             {% if equipment.WRIST.sockets %}
@@ -235,7 +235,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="equipment-slot">
-                        <div>{{ equipment.HANDS.equipment.name }}</div>
+                        <div class="{{ equipment.HANDS.quality|slug }}-text">{{ equipment.HANDS.equipment.name }}</div>
                         <div>
                             {% if equipment.HANDS.enchants %}
                                 {% for enchant in equipment.HANDS.enchants %}
@@ -262,7 +262,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="equipment-slot">
-                        <div>{{ equipment.WAIST.equipment.name }}</div>
+                        <div class="{{ equipment.WAIST.quality|slug }}-text">{{ equipment.WAIST.equipment.name }}</div>
                         <div>
                             {% if equipment.WAIST.enchants %}
                                 {% for enchant in equipment.WAIST.enchants %}
@@ -289,7 +289,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="equipment-slot">
-                        <div>{{ equipment.LEGS.equipment.name }}</div>
+                        <div class="{{ equipment.LEGS.quality|slug }}-text">{{ equipment.LEGS.equipment.name }}</div>
                         <div>
                             {% if equipment.LEGS.enchants %}
                                 {% for enchant in equipment.LEGS.enchants %}
@@ -316,7 +316,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="equipment-slot">
-                        <div>{{ equipment.FEET.equipment.name }}</div>
+                        <div class="{{ equipment.FEET.quality|slug }}-text">{{ equipment.FEET.equipment.name }}</div>
                         <div>
                             {% if equipment.FEET.enchants %}
                                 {% for enchant in equipment.FEET.enchants %}
@@ -343,7 +343,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="equipment-slot">
-                        <div>{{ equipment.FINGER_1.equipment.name }}</div>
+                        <div class="{{ equipment.FINGER_1.quality|slug }}-text">{{ equipment.FINGER_1.equipment.name }}</div>
                         <div>
                             {% if equipment.FINGER_1.enchants %}
                                 {% for enchant in equipment.FINGER_1.enchants %}
@@ -370,7 +370,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="equipment-slot">
-                        <div>{{ equipment.FINGER_2.equipment.name }}</div>
+                        <div class="{{ equipment.FINGER_2.quality|slug }}-text">{{ equipment.FINGER_2.equipment.name }}</div>
                         <div>
                             {% if equipment.FINGER_2.enchants %}
                                 {% for enchant in equipment.FINGER_2.enchants %}
@@ -397,7 +397,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="equipment-slot">
-                        <div>{{ equipment.TRINKET_1.equipment.name }}</div>
+                        <div class="{{ equipment.TRINKET_1.quality|slug }}-text">{{ equipment.TRINKET_1.equipment.name }}</div>
                         <div>
                             {% if equipment.TRINKET_1.enchants %}
                                 {% for enchant in equipment.TRINKET_1.enchants %}
@@ -424,7 +424,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="equipment-slot">
-                        <div>{{ equipment.TRINKET_2.equipment.name }}</div>
+                        <div class="{{ equipment.TRINKET_2.quality|slug }}-text">{{ equipment.TRINKET_2.equipment.name }}</div>
                         <div>
                             {% if equipment.TRINKET_2.enchants %}
                                 {% for enchant in equipment.TRINKET_2.enchants %}
@@ -454,7 +454,7 @@
         <div class="col-6" style="text-align: right">
             <div>
                 <div class="equipment-slot">
-                    <div>{{ equipment.MAIN_HAND.equipment.name }}</div>
+                    <div class="{{ equipment.MAIN_HAND.quality|slug }}-text">{{ equipment.MAIN_HAND.equipment.name }}</div>
                     <div>
                         {% if equipment.MAIN_HAND.enchants %}
                             {% for enchant in equipment.MAIN_HAND.enchants %}
@@ -462,7 +462,9 @@
                             {% endfor %}
                         {% endif %}
                         {% if equipment.MAIN_HAND.sockets %}
-                            <div class="equipment-slot-text">SOCKET</div>
+                            {% for socket in equipment.MAIN_HAND.sockets %}
+                                <div class="equipment-slot-text"><img src="{% static 'wowprof/images/UI-EmptySocket-Prismatic.png' %}"></div>
+                            {% endfor %}
                         {% endif %}
                         <div class="equipment-slot-text">{{ equipment.MAIN_HAND.item_level }}</div>
                     </div>
@@ -486,11 +488,13 @@
                 {% endif %}
                 </div>
                 <div class="equipment-slot">
-                    <div>{{ equipment.OFF_HAND.equipment.name }}</div>
+                    <div class="{{ equipment.OFF_HAND.quality|slug }}-text">{{ equipment.OFF_HAND.equipment.name }}</div>
                     <div>
                         <div class="equipment-slot-text">{{ equipment.OFF_HAND.item_level }}</div>
                         {% if equipment.OFF_HAND.sockets %}
-                            <div class="equipment-slot-text">SOCKET</div>
+                            {% for socket in equipment.OFF_HAND.sockets %}
+                                <div class="equipment-slot-text"><img src="{% static 'wowprof/images/UI-EmptySocket-Prismatic.png' %}"></div>
+                            {% endfor %}
                         {% endif %}
                         {% if equipment.OFF_HAND.enchants %}
                             {% for enchant in equipment.OFF_HAND.enchants %}

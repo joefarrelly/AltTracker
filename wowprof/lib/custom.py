@@ -52,7 +52,7 @@ def getAltData(name, realm, alt_obj):
         'https://eu.api.blizzard.com/profile/wow/character/' + realm + '/' + quote(name) + '/character-media',
         'https://eu.api.blizzard.com/profile/wow/character/' + realm + '/' + quote(name) + '/equipment'
     ]
-    mount = garrison = mage_tower = shadowmourne = balance_of_power = 0
+    mount = garrison = mage_tower = shadowmourne = 0
     current_professions = []
     for url in urls:
         response = requests.get(url, params=params)
@@ -248,6 +248,7 @@ def getAltData(name, realm, alt_obj):
                 except KeyError:
                     print(name + '-' + realm + ' has no equipment data')
                     print(KeyError)
+        response.close()
     if alt_obj.altFaction == 'Horde':
         mage_tower = 2
     if (alt_obj.altClass != 1) and (alt_obj.altClass != 2) and (alt_obj.altClass != 6):
@@ -258,7 +259,7 @@ def getAltData(name, realm, alt_obj):
         obj.garrison = garrison + 1
         obj.mageTower = mage_tower
         obj.shadowmourne = shadowmourne
-        obj.balance_of_power = balance_of_power
+        # obj.balance_of_power = balance_of_power
         # obj.profession1 = getattr(AltCustom, (next(iter(current_professions[0:1] or []), 'Missing')).upper())
         obj.profession1 = next(iter(current_professions[0:1] or []), 0)
         # obj.profession2 = getattr(AltCustom, (next(iter(current_professions[1:2] or []), 'Missing')).upper())
@@ -272,7 +273,7 @@ def getAltData(name, realm, alt_obj):
             garrison=garrison + 1,
             mageTower=mage_tower,
             shadowmourne=shadowmourne,
-            balance_of_power=balance_of_power,
+            # balance_of_power=balance_of_power,
             # profession1=getattr(AltCustom, (next(iter(current_professions[0:1] or []), 'Missing')).upper()),
             profession1=next(iter(current_professions[0:1] or []), 0),
             # profession2=getattr(AltCustom, (next(iter(current_professions[1:2] or []), 'Missing')).upper()),
