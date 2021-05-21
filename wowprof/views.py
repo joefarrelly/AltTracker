@@ -157,8 +157,6 @@ def wowProfAltsMoreDetails(request, name, realm):
         equipment_objs = AltEquipment.objects.prefetch_related('equipment').filter(alt=alt_obj)
         filtered_equipment_objs = {}
         for item in equipment_objs:
-            temp = {item.slot: item}
-            print(temp)
             filtered_equipment_objs[item.slot] = item
     except AltEquipment.DoesNotExist:
         filtered_equipment_objs = {}

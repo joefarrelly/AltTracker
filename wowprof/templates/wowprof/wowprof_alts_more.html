@@ -2,88 +2,231 @@
 {% block title %}WoWProf Alt Profession
 {% endblock %}
 {% load static %}
+{% load alttracker_filters %}
 {% block content %}
 <div class="price-list">
     <h2 id="price-list-header"  style="text-align: center">WoW Alt More Details</h2>
     <div class="row">
         <a href="{% url 'wowprof_alts' %}" class="btn btn-secondary">Home</a>
     </div>
-    <div id="character-image" style="width: 100%; height: 100%; position: absolute">
-        <img src="{{ media.mainRaw }}" width=100%>
+    <div id="character-image" style="width: 1600px; height: 1200px; position: absolute; top: -90px; z-index: -1; left: 50%; transform: translate(-50%); border: none">
+        <img src="{{ media.mainRaw }}" style="width: 100%; height: 100%; max-width: none">
     </div>
     <div class="row">
-        <div class="col-4" style="border-style: solid">
+        <div class="col-5" style="border-style: none">
             <div class="row">
-                <div class="col-12" style="border-style: solid; border-color: red">
-                    <img src="{{ equipment.HEAD.equipment.icon }}">
-                    <label>{{ equipment.HEAD.equipment.name }}<br />{{ equipment.HEAD.item_level }}</label>
+                <div class="col-12">
+                    <div class="equipment-slot">
+                    {% if equipment.HEAD %}
+                        <img class="{{ equipment.HEAD.equipment.quality|slug }}" src="{{ equipment.HEAD.equipment.icon }}">
+                    {% else %}
+                        <img src="{% static 'wowprof/images/paperdoll/UI-PaperDoll-Slot-Head.png' %}">
+                    {% endif %}
+                    </div>
+                    <div class="equipment-slot">
+                        <label>{{ equipment.HEAD.equipment.name }}<br />{{ equipment.HEAD.item_level }}</label>
+                    </div>
                 </div>
-                <div class="col-12" style="border-style: solid; border-color: red">
-                    <img src="{{ equipment.NECK.equipment.icon }}">
-                    <label>{{ equipment.NECK.equipment.name }}<br />{{ equipment.NECK.item_level }}</label>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="equipment-slot">
+                    {% if equipment.NECK %}
+                        <img class="{{ equipment.NECK.equipment.quality|slug }}" src="{{ equipment.NECK.equipment.icon }}">
+                    {% else %}
+                        <img src="{% static 'wowprof/images/paperdoll/UI-PaperDoll-Slot-Neck.png' %}">
+                    {% endif %}
+                    </div>
+                    <div class="equipment-slot">
+                        <label>{{ equipment.NECK.equipment.name }}<br />{{ equipment.NECK.item_level }}</label>
+                    </div>
                 </div>
-                <div class="col-12" style="border-style: solid; border-color: red">
-                    <img src="{{ equipment.SHOULDER.equipment.icon }}">
-                    <label>{{ equipment.SHOULDER.equipment.name }}<br />{{ equipment.SHOULDER.item_level }}</label>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="equipment-slot">
+                    {% if equipment.SHOULDER %}
+                        <img class="{{ equipment.SHOULDER.equipment.quality|slug }}" src="{{ equipment.SHOULDER.equipment.icon }}">
+                    {% else %}
+                        <img src="{% static 'wowprof/images/paperdoll/UI-PaperDoll-Slot-Shoulder.png' %}">
+                    {% endif %}
+                    </div>
+                    <div class="equipment-slot">
+                        <label>{{ equipment.SHOULDER.equipment.name }}<br />{{ equipment.SHOULDER.item_level }}</label>
+                    </div>
                 </div>
-                <div class="col-12" style="border-style: solid; border-color: red">
-                    <img src="{{ equipment.BACK.equipment.icon }}">
-                    <label>{{ equipment.BACK.equipment.name }}<br />{{ equipment.BACK.item_level }}</label>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="equipment-slot">
+                    {% if equipment.BACK %}
+                        <img class="{{ equipment.BACK.equipment.quality|slug }}" src="{{ equipment.BACK.equipment.icon }}">
+                    {% else %}
+                        <img src="{% static 'wowprof/images/paperdoll/UI-PaperDoll-Slot-Chest.png' %}">
+                    {% endif %}
+                    </div>
+                    <div class="equipment-slot">
+                        <label>{{ equipment.BACK.equipment.name }}<br />{{ equipment.BACK.item_level }}</label>
+                    </div>
                 </div>
-                <div class="col-12" style="border-style: solid; border-color: red">
-                    <img src="{{ equipment.CHEST.equipment.icon }}">
-                    <label>{{ equipment.CHEST.equipment.name }}<br />{{ equipment.CHEST.item_level }}</label>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="equipment-slot">
+                    {% if equipment.CHEST %}
+                        <img class="{{ equipment.CHEST.equipment.quality|slug }}" src="{{ equipment.CHEST.equipment.icon }}">
+                    {% else %}
+                        <img src="{% static 'wowprof/images/paperdoll/UI-PaperDoll-Slot-Chest.png' %}">
+                    {% endif %}
+                    </div>
+                    <div class="equipment-slot">
+                        <label>{{ equipment.CHEST.equipment.name }}<br />{{ equipment.CHEST.item_level }}</label>
+                    </div>
                 </div>
-                <div class="col-12" style="border-style: solid; border-color: red">
-                    <img src="{{ equipment.SHIRT.equipment.icon }}" width="56" height="56">
-                    <label>{{ equipment.SHIRT.equipment.name }}<br />{{ equipment.SHIRT.item_level }}</label>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="equipment-slot">
+                    {% if equipment.SHIRT %}
+                        <img class="{{ equipment.SHIRT.equipment.quality|slug }}" src="{{ equipment.SHIRT.equipment.icon }}"> 
+                    {% else %}
+                        <img src="{% static 'wowprof/images/paperdoll/UI-PaperDoll-Slot-Shirt.png' %}">
+                    {% endif %}
+                    </div>
+                    <div class="equipment-slot">
+                        <label>{{ equipment.SHIRT.equipment.name }}<br />{{ equipment.SHIRT.item_level }}</label>
+                    </div>
                 </div>
-                <div class="col-12" style="border-style: solid; border-color: red">
-                    <img src="{{ equipment.TABARD.equipment.icon }}">
-                    <label>{{ equipment.TABARD.equipment.name }}<br />{{ equipment.TABARD.item_level }}</label>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="equipment-slot">
+                    {% if equipment.TABARD %}
+                        <img class="{{ equipment.TABARD.equipment.quality|slug }}" src="{{ equipment.TABARD.equipment.icon }}">
+                    {% else %}
+                        <img src="{% static 'wowprof/images/paperdoll/UI-PaperDoll-Slot-Tabard.png' %}">
+                    {% endif %}
+                    </div>
+                    <div class="equipment-slot">
+                        <label>{{ equipment.TABARD.equipment.name }}<br />{{ equipment.TABARD.item_level }}</label>
+                    </div>
                 </div>
-                <div class="col-12" style="border-style: solid; border-color: red">
-                    <img src="{{ equipment.WRIST.equipment.icon }}">
-                    <label>{{ equipment.WRIST.equipment.name }}<br />{{ equipment.WRIST.item_level }}</label>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="equipment-slot">
+                    {% if equipment.WRIST %}
+                        <img class="{{ equipment.WRIST.equipment.quality|slug }}" src="{{ equipment.WRIST.equipment.icon }}">
+                    {% else %}
+                        <img src="{% static 'wowprof/images/paperdoll/UI-PaperDoll-Slot-Waist.png' %}">
+                    {% endif %}
+                    </div>
+                    <div class="equipment-slot">
+                        <label>{{ equipment.WRIST.equipment.name }}<br />{{ equipment.WRIST.item_level }}</label>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-4" style="border-style: solid">
+        <div class="col-2" style="border-style: none;">
 
         </div>
-        <div class="col-4" style="border-style: solid; text-align: right">
+        <div class="col-5" style="border-style: none; text-align: right">
             <div class="row">
-                <div class="col-12" style="border-style: solid; border-color: red">
-                    <label>{{ equipment.HANDS.equipment.name }}<br />{{ equipment.HANDS.item_level }}</label>
-                    <img src="{{ equipment.HANDS.equipment.icon }}">
+                <div class="col-12">
+                    <div class="equipment-slot">
+                        <label>{{ equipment.HANDS.equipment.name }}<br />{{ equipment.HANDS.item_level }}</label>
+                    </div>
+                    <div class="equipment-slot">
+                    {% if equipment.HANDS %}
+                        <img class="{{ equipment.HANDS.equipment.quality|slug }}" src="{{ equipment.HANDS.equipment.icon }}">
+                    {% else %}
+                        <img src="{% static 'wowprof/images/paperdoll/UI-PaperDoll-Slot-Hands.png' %}">
+                    {% endif %}
+                    </div>
                 </div>
-                <div class="col-12" style="border-style: solid; border-color: red">
-                    <label>{{ equipment.WAIST.equipment.name }}<br />{{ equipment.WAIST.item_level }}</label>
-                    <img src="{{ equipment.WAIST.equipment.icon }}">
+                <div class="col-12">
+                    <div class="equipment-slot">
+                        <label>{{ equipment.WAIST.equipment.name }}<br />{{ equipment.WAIST.item_level }}</label>
+                    </div>
+                    <div class="equipment-slot">
+                    {% if equipment.WAIST %}
+                        <img class="{{ equipment.WAIST.equipment.quality|slug }}" src="{{ equipment.WAIST.equipment.icon }}">
+                    {% else %}
+                        <img src="{% static 'wowprof/images/paperdoll/UI-PaperDoll-Slot-Waist.png' %}">
+                    {% endif %}
+                    </div>
                 </div>
-                <div class="col-12" style="border-style: solid; border-color: red">
-                    <label>{{ equipment.LEGS.equipment.name }}<br />{{ equipment.LEGS.item_level }}</label>
-                    <img src="{{ equipment.LEGS.equipment.icon }}">
+                <div class="col-12">
+                    <div class="equipment-slot">
+                        <label>{{ equipment.LEGS.equipment.name }}<br />{{ equipment.LEGS.item_level }}</label>
+                    </div>
+                    <div class="equipment-slot">
+                    {% if equipment.LEGS %}
+                        <img class="{{ equipment.LEGS.equipment.quality|slug }}" src="{{ equipment.LEGS.equipment.icon }}">
+                    {% else %}
+                        <img src="{% static 'wowprof/images/paperdoll/UI-PaperDoll-Slot-Legs.png' %}">
+                    {% endif %}
+                    </div>
                 </div>
-                <div class="col-12" style="border-style: solid; border-color: red">
-                    <label>{{ equipment.FEET.equipment.name }}<br />{{ equipment.FEET.item_level }}</label>
-                    <img src="{{ equipment.FEET.equipment.icon }}">
+                <div class="col-12">
+                    <div class="equipment-slot">
+                        <label>{{ equipment.FEET.equipment.name }}<br />{{ equipment.FEET.item_level }}</label>
+                    </div>
+                    <div class="equipment-slot">
+                    {% if equipment.FEET %}
+                        <img class="{{ equipment.FEET.equipment.quality|slug }}" src="{{ equipment.FEET.equipment.icon }}">
+                    {% else %}
+                        <img src="{% static 'wowprof/images/paperdoll/UI-PaperDoll-Slot-Feet.png' %}">
+                    {% endif %}
+                    </div>
                 </div>
-                <div class="col-12" style="border-style: solid; border-color: red">
-                    <label>{{ equipment.FINGER_1.equipment.name }}<br />{{ equipment.FINGER_1.item_level }}</label>
-                    <img src="{{ equipment.FINGER_1.equipment.icon }}">
+                <div class="col-12">
+                    <div class="equipment-slot">
+                        <label>{{ equipment.FINGER_1.equipment.name }}<br />{{ equipment.FINGER_1.item_level }}</label>
+                    </div>
+                    <div class="equipment-slot">
+                    {% if equipment.FINGER_1 %}
+                        <img class="{{ equipment.FINGER_1.equipment.quality|slug }}" src="{{ equipment.FINGER_1.equipment.icon }}">
+                    {% else %}
+                        <img src="{% static 'wowprof/images/paperdoll/UI-PaperDoll-Slot-Finger.png' %}">
+                    {% endif %}
+                    </div>
                 </div>
-                <div class="col-12" style="border-style: solid; border-color: red">
-                    <label>{{ equipment.FINGER_2.equipment.name }}<br />{{ equipment.FINGER_2.item_level }}</label>
-                    <img src="{{ equipment.FINGER_2.equipment.icon }}">
+                <div class="col-12">
+                    <div class="equipment-slot">
+                        <label>{{ equipment.FINGER_2.equipment.name }}<br />{{ equipment.FINGER_2.item_level }}</label>
+                    </div>
+                    <div class="equipment-slot">
+                    {% if equipment.FINGER_2 %}
+                        <img class="{{ equipment.FINGER_2.equipment.quality|slug }}" src="{{ equipment.FINGER_2.equipment.icon }}">
+                    {% else %}
+                        <img src="{% static 'wowprof/images/paperdoll/UI-PaperDoll-Slot-Finger.png' %}">
+                    {% endif %}
+                    </div>
                 </div>
-                <div class="col-12" style="border-style: solid; border-color: red">
-                    <label>{{ equipment.TRINKET_1.equipment.name }}<br />{{ equipment.TRINKET_1.item_level }}</label>
-                    <img src="{{ equipment.TRINKET_1.equipment.icon }}">
+                <div class="col-12">
+                    <div class="equipment-slot">
+                        <label>{{ equipment.TRINKET_1.equipment.name }}<br />{{ equipment.TRINKET_1.item_level }}</label>
+                    </div>
+                    <div class="equipment-slot">
+                    {% if equipment.TRINKET_1 %}
+                        <img class="{{ equipment.TRINKET_1.equipment.quality|slug }}" src="{{ equipment.TRINKET_1.equipment.icon }}">
+                    {% else %}
+                        <img src="{% static 'wowprof/images/paperdoll/UI-PaperDoll-Slot-Trinket.png' %}">
+                    {% endif %}
+                    </div>
                 </div>
-                <div class="col-12" style="border-style: solid; border-color: red">
-                    <label>{{ equipment.TRINKET_2.equipment.name }}<br />{{ equipment.TRINKET_2.item_level }}</label>
-                    <img src="{{ equipment.TRINKET_2.equipment.icon }}">
+                <div class="col-12">
+                    <div class="equipment-slot">
+                        <label>{{ equipment.TRINKET_2.equipment.name }}<br />{{ equipment.TRINKET_2.item_level }}</label>
+                    </div>
+                    <div class="equipment-slot">
+                    {% if equipment.TRINKET_2 %}
+                        <img class="{{ equipment.TRINKET_2.equipment.quality|slug }}" src="{{ equipment.TRINKET_2.equipment.icon }}">
+                    {% else %}
+                        <img src="{% static 'wowprof/images/paperdoll/UI-PaperDoll-Slot-Trinket.png' %}">
+                    {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
