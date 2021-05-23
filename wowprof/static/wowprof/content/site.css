@@ -32,6 +32,27 @@ div.row{
     color: green;
 }
 
+.hidden{
+    display: none;
+}
+
+/*.item-bg{
+    background-color: grey;
+}*/
+
+.tooltip-wrapper{
+    display: inline-block;
+    cursor: pointer;
+    /*border: dotted;*/
+}
+
+.tooltip-style{
+    background-color: #242924;
+    display: inline-block;
+    padding: 5px;
+    text-align: left;
+}
+
 .body-content {
     padding: 5px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -236,6 +257,19 @@ img[src=""] {
 }
 .heirloom-text{
     color: #00CCFF;
+}
+
+.primary-stat{
+    color: #FFFFFF;
+}
+.primary-stat-negated{
+    color: #808080;
+}
+.secondary-stat{
+    color: #00ff00;
+}
+.default-text{
+    color: #ffd900;
 }
 
 /*#bgtest{

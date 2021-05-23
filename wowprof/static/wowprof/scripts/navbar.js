@@ -104,6 +104,82 @@ $(function() {
 //     });
 // });
 
+// tooltips
+// $(function () {
+//   $('[data-toggle="tooltip"]').tooltip()
+// })
+
+// $(document).ready(function () {
+//     $('.tooltip-wrapper').tooltip();
+// });
+
+$(document).ready(function () {
+    // Tooltips
+    $('.tooltip-wrapper').each(function () {
+        if (typeof $('#' + $(this).data('tooltip-wrapper')).html() !== 'undefined') {
+            $(this).tooltip(
+            {
+                html: true,
+                title: $('#' + $(this).data('tooltip-wrapper')).html()
+            });
+        };
+    });
+});
+
+// $(document).ready(function ()  {
+//     // Tooltips
+//     $('.tooltip-wrapper').each(function () {
+//         // console.log(this).data('tooltip-wrapper')
+//         if (typeof $('#' + $(this).data('tooltip-wrapper')).html() !== 'undefined') {
+//             console.log($(this).data('tooltip-wrapper'))
+//             // console.log($(this).data('tooltip-wrapper')).html()
+//         };
+//         // console.log(($(this).data('tooltip-wrapper')).html())
+//     });
+// });
+
+// $(document).ready(function () {
+//         // Tooltips
+//         $('.tip').each(function () {
+//             $(this).tooltip(
+//             {
+//                 html: true,
+//                 title: $('#' + $(this).data('tip')).html()
+//             });
+//         });
+//     });
+
+// $(document).ready(function () {
+//         // Tooltips
+//         $('.tipper').each(function () {
+//             $(this).tooltip(
+//             {
+//                 html: true,
+//                 // title: $('#' + $(this).data('tipper')).html()
+//             });
+//         });
+//     });
+
+// tooltips new
+// $('.tip').each(function () {
+//     $(this).tooltip(
+//     {
+//         html: true,
+//         title: $('#' + $(this).data('tip')).html()
+//     });
+// });
+
+// tooltips new new
+// $(document).ready(function(){
+//   $('[data-toggle="tooltip"]').each(function(){
+//     var url=$(this).prop('href');
+//     $(this).tooltip({
+//       html:true,
+//       title: $(url.substr(url.lastIndexOf('#'))).html()
+//     })
+//   })
+// });
+
 $(document).ready(function () {
                 $('th').each(function (col) {
                     $(this).hover(
