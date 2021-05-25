@@ -249,6 +249,8 @@ class AltEquipment(models.Model):
     quality = models.CharField(max_length=20)
     sockets = models.JSONField()
     enchants = models.JSONField()
+    spells = models.JSONField()
+    azerite = models.JSONField()
 
     class Meta:
         db_table = 'alttracker_altequipment'

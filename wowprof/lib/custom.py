@@ -223,6 +223,14 @@ def getAltData(name, realm, alt_obj):
                             enchants = item['enchantments']
                         else:
                             enchants = []
+                        if 'spells' in item:
+                            spells = item['spells']
+                        else:
+                            spells = []
+                        if 'azerite_details' in item:
+                            azerite = item['azerite_details']
+                        else:
+                            azerite = []
                         try:
                             obj1 = AltEquipment.objects.get(alt=alt_obj, slot=item['slot']['type'])
                             obj1.equipment = obj
@@ -231,6 +239,8 @@ def getAltData(name, realm, alt_obj):
                             obj1.sockets = sockets
                             obj1.quality = item['quality']['name']
                             obj1.enchants = enchants
+                            obj1.spells = spells
+                            obj1.azerite = azerite
                             obj1.altEquipmentExpiryDate = timezone.now() + datetime.timedelta(days=30)
                             obj1.save()
                         except AltEquipment.DoesNotExist:
@@ -242,6 +252,8 @@ def getAltData(name, realm, alt_obj):
                                 sockets=sockets,
                                 quality=item['quality']['name'],
                                 enchants=enchants,
+                                spells=spells,
+                                azerite=azerite,
                                 altEquipmentExpiryDate=timezone.now() + datetime.timedelta(days=30),
                                 slot=item['slot']['type']
                             )

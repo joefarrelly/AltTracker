@@ -12,4 +12,5 @@ urlpatterns = [
     path('alts/<str:name>/<str:realm>/profession/<str:profession>', views.wowProfAltsProfession, name='wowprof_alts_profession'),
     path('alts/<str:name>/<str:realm>/details', views.wowProfAltsMoreDetails, name='wowprof_alts_more'),
     path('requiem/', views.wowProfRequiem, name='wowprof_requiem'),
+    path('mounts/', views.wowProfChecker, name='wowprof_checker')
 ]

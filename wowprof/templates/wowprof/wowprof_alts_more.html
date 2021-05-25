@@ -4,8 +4,8 @@
 {% load static %}
 {% load alttracker_filters %}
 {% block content %}
-<div class="price-list">
-    <h2 id="price-list-header"  style="text-align: center">{{ alt.altName }} - {{ alt.altRealm }}</h2>
+<div>
+    <h2 style="text-align: center">{{ alt.altName }} - {{ alt.altRealm }}</h2>
     <div class="row">
         <a href="{% url 'wowprof_alts' %}" class="btn btn-secondary">Alt Tracker Home</a>
     </div>
@@ -554,6 +554,28 @@
                 {% else %}
                     <div class="primary-stat">{{ stat.display.display_string }}</div>
                 {% endif %}
+            {% endfor %}
+            {% for socket in item.sockets %}
+                {% if socket.display_string %}
+                    <div>{{ socket.display_string }} <img src="{% static 'wowprof/images/UI-EmptySocket-Prismatic.png' %}"></div>
+                {% else %}
+                    <div><img src="{% static 'wowprof/images/UI-EmptySocket-Prismatic.png' %}"></div>
+                {% endif %}
+            {% endfor %}
+            {% for spell in item.spells %}
+                <br /><div class="secondary-stat">{{ spell.description }}</div>
+            {% endfor %}
+            {% if item.azerite %}
+                <br /><div class="default-text">Azerite</div>
+            {% endif %}
+            {% for azerite in item.azerite.selected_powers reversed %}
+                <div class="azerite">{{ azerite.spell_tooltip.spell.name }}</div>
+                <div class="secondary-stat">{{ azerite.spell_tooltip.description }}</div>
+            {% endfor %}
+            {% for essence in item.azerite.selected_essences %}
+                <div class="azerite">{{ essence.essence.name }} - Rank {{ essence.rank }}</div>
+                <div class="secondary-stat">{{ essence.main_spell_tooltip.description }}</div>
+                <div class="secondary-stat">{{ essence.passive_spell_tooltip.description }}</div>
             {% endfor %}
         </div>
     </div>

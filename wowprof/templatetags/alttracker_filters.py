@@ -10,7 +10,7 @@ def slug(value):
 
 @register.filter(name='display')
 def display(value):
-    return (value.title())
+    return ((value).replace('_', ' ')).title()
 
 
 @register.filter(name='cssname')

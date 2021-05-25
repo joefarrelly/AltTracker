@@ -128,20 +128,14 @@ def wowProfAlts(request):
     alt_objects = []
     if 'altId' in request.session:
         alt_objects = Alt.objects.select_related('altcustom').filter(pk__in=request.session['altId'])
-        for alt in alt_objects:
-            try:
-                pass
-            except AltCustom.DoesNotExist:
-                pass
-
     return render(request, "wowprof/wowprof_alts.html", {'altData': alt_objects})
 
 
 def wowProfAltsProfession(request, name, realm, profession):
-    tempInstance = get_object_or_404(Alt, altName=name.capitalize(), altRealmSlug=realm)
-    tempInstance2 = get_object_or_404(AltProfession, alt=tempInstance, profession=getattr(AltProfession.Profession, profession.upper()))
-    tempMyObj = tempInstance2.professionData
-    return render(request, "wowprof/wowprof_alts_profession.html", {'data': tempMyObj})
+    alt_obj = get_object_or_404(Alt, altName=name.capitalize(), altRealmSlug=realm)
+    profession_obj = get_object_or_404(AltProfession, alt=alt_obj, profession=getattr(AltProfession.Profession, profession.upper()))
+    # tempMyObj = tempInstance2.professionData
+    return render(request, "wowprof/wowprof_alts_profession.html", {'alt': alt_obj, 'profession': profession_obj})
 
 
 def wowProfAltsMoreDetails(request, name, realm):
@@ -161,6 +155,13 @@ def wowProfAltsMoreDetails(request, name, realm):
     except AltEquipment.DoesNotExist:
         filtered_equipment_objs = {}
     return render(request, "wowprof/wowprof_alts_more.html", {'alt': alt_obj, 'media': media_obj, 'equipment': filtered_equipment_objs})
+
+
+def wowProfChecker(request):
+    alt_objects = []
+    if 'altId' in request.session:
+        alt_objects = Alt.objects.select_related('altcustom').filter(pk__in=request.session['altId'])
+    return render(request, 'wowprof/wowprof_checker.html', {'altData': alt_objects})
 
 
 def wowProfRequiem(request):
