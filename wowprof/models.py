@@ -129,6 +129,8 @@ class AltCustom(models.Model):
     # )
     # balance_of_power = models.PositiveSmallIntegerField(choices=BALANCE_OF_POWER, default=NO)
 
+    average_item_level = models.PositiveSmallIntegerField(default=0)
+
     class Profession(models.IntegerChoices):
         MISSING = 0, _('Missing')
         ALCHEMY = 171, _('Alchemy')

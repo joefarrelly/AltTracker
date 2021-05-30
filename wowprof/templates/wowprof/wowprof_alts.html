@@ -17,10 +17,7 @@
                 {% csrf_token %}
                 <input type="submit" class="btn btn-secondary" id="wowprof-alts-refresh-button" name="wowprof-alts-refresh-button" value="Sync Characters" />
             </form>
-            <form method="post" style="display: inline-block">
-                {% csrf_token %}
-                <input type="submit" class="btn btn-secondary" id="wowprof-alts-refresh-data-button" name="wowprof-alts-refresh-data-button" value="Refresh Data" />
-            </form>
+            <input class="btn btn-secondary" type="button" id="ajax-test" name="ajax-test" value="Refresh All">
         </div>
     </div>
     <div class="row">
@@ -39,7 +36,9 @@
                     <th>Class <i class="fas fa-sort"></i></th>
                     <th>Prof1 <i class="fas fa-sort"></i></th>
                     <th>Prof2 <i class="fas fa-sort"></i></th>
-                    <th>More</th>
+                    <th>Gear <i class="fas fa-sort"></i></th>
+                    <th>Last Updated</th>
+                    <th></th>
                 </tr>
                 {% for a in altData %}
                 <tr>
@@ -63,7 +62,13 @@
                     {% else %}
                         <td><a href="{% url 'wowprof_alts_profession' name=a.altName|slug realm=a.altRealm|slug profession=a.altcustom.get_profession2_display|slug %}">{{ a.altcustom.get_profession2_display }}</a></td>
                     {% endif %}
-                    <td><a href="{% url 'wowprof_alts_more' name=a.altName|slug realm=a.altRealm|slug %}"><button type="button">>></button></a></td>
+                    <td><a href="{% url 'wowprof_alts_more' name=a.altName|slug realm=a.altRealm|slug %}">{{ a.altcustom.average_item_level }}</a></td>
+                    {% if not a.altcustom %}
+                        <td>Not yet scanned</td>
+                    {% else %}
+                        <td>{{ a.altcustom.lastRefresh|datediff }}</td>
+                    {% endif %}
+                    <td><button><i class="fas fa-sync-alt"></i></button></td>
                 </tr>
                 {% endfor %}
             </table>

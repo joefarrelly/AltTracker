@@ -1,4 +1,6 @@
 from django import template
+import datetime
+from django.utils import timezone
 
 register = template.Library()
 
@@ -16,3 +18,15 @@ def display(value):
 @register.filter(name='cssname')
 def cssname(value):
     return ((value).replace('_', '-')).lower()
+
+
+@register.filter(name='datediff')
+def datadiff(value):
+    time = timezone.now() - value
+    if time.days >= 1:
+        return (time.days + " day(s) ago")
+    elif time.seconds >= 3600:
+        return (str(int((time.seconds / 60) / 60)) + " hour(s) ago")
+    elif time.seconds >= 60:
+        return (str(int(time.seconds / 60)) + " minute(s) ago")
+    return ("Less than a minute ago")

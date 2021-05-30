@@ -2,6 +2,7 @@ import requests
 import environ
 import datetime
 from django.utils import timezone
+import datetime
 from wowprof.models import *
 
 from urllib.parse import quote
@@ -15,13 +16,6 @@ environ.Env.read_env()
 
 BLIZZ_CLIENT = env("BLIZZ_CLIENT")
 BLIZZ_SECRET = env("BLIZZ_SECRET")
-
-
-def my_func(foo, bar):
-    print(foo)
-    print(bar)
-    print("Job in a queue done")
-    return
 
 
 def getToken(BLIZZ_CLIENT, BLIZZ_SECRET):
@@ -52,14 +46,31 @@ def getAltData(name, realm, alt_obj):
         'https://eu.api.blizzard.com/profile/wow/character/' + realm + '/' + quote(name) + '/character-media',
         'https://eu.api.blizzard.com/profile/wow/character/' + realm + '/' + quote(name) + '/equipment'
     ]
-    mount = garrison = mage_tower = shadowmourne = 0
+    mount = garrison = mage_tower = shadowmourne = average_item_level = 0
     current_professions = []
+    average_item_level_dict = {
+        "HEAD": 0,
+        "NECK": 0,
+        "SHOULDER": 0,
+        "CHEST": 0,
+        "WAIST": 0,
+        "LEGS": 0,
+        "FEET": 0,
+        "WRIST": 0,
+        "HANDS": 0,
+        "FINGER_1": 0,
+        "FINGER_2": 0,
+        "TRINKET_1": 0,
+        "TRINKET_2": 0,
+        "BACK": 0,
+        "MAIN_HAND": 0,
+        "OFF_HAND": 0,
+    }
     for url in urls:
         response = requests.get(url, params=params)
         if response.status_code == 200:
             if 'professions' in url:
                 try:
-                    # current_professions = []
                     data = response.json()['primaries']
                     for profession in data:
                         try:
@@ -86,11 +97,8 @@ def getAltData(name, realm, alt_obj):
                     print(name + '-' + realm + ' has no professions data')
             elif 'achievements' in url:
                 try:
-                    # mount = garrison = 0
                     data = response.json()['achievements']
                     for achievement in data:
-                        # if achievement['id'] == 10459 and achievement['criteria']['is_completed']:
-                        #     balance_of_power += 1
                         if achievement['id'] == 891 and achievement['criteria']['is_completed']:  # riding skill slow ground
                             mount += 1
                         elif achievement['id'] == 889 and achievement['criteria']['is_completed']:  # riding skill fast ground
@@ -118,15 +126,12 @@ def getAltData(name, realm, alt_obj):
                     print(name + '-' + realm + ' has no achievement data')
             elif 'quests/completed' in url:
                 try:
-                    # mage_tower = 0
                     data = response.json()['quests']
                     for quest in data:
                         if quest['id'] == 36848:
                             mage_tower += 1
                         if quest['id'] == 24914:
                             shadowmourne += 1
-                        # if quest['id'] == 43533:
-                        #     balance_of_power += 1
                     try:
                         obj = AltQuestCompleted.objects.get(alt=alt_obj)
                         obj.questCompletedData = data
@@ -182,15 +187,12 @@ def getAltData(name, realm, alt_obj):
             elif 'equipment' in url:
                 try:
                     data = response.json()['equipped_items']
-                    print(len(data))
                     for item in data:
                         try:
                             obj = Equipment.objects.get(item_id=item['item']['id'])
                             obj.name = item['name']
                             obj.slot = item['slot']['type']
-                            # obj.quality = item['quality']['name']
                             obj.armour_type = item['item_subclass']['name']
-                            # obj.icon = media_url
                             obj.save()
                         except Equipment.DoesNotExist:
                             media_url_response = requests.get('https://eu.api.blizzard.com/data/wow/media/item/' + str(item['item']['id']), params={'access_token': client_token, 'namespace': 'static-eu', 'locale': 'en_US'})
@@ -205,9 +207,7 @@ def getAltData(name, realm, alt_obj):
                             obj = Equipment.objects.create(
                                 item_id=item['item']['id'],
                                 name=item['name'],
-                                # required_level=required_level,
                                 slot=item['slot']['type'],
-                                # quality=item['quality']['name'],
                                 armour_type=item['item_subclass']['name'],
                                 icon=media_url
                             )
@@ -231,6 +231,8 @@ def getAltData(name, realm, alt_obj):
                             azerite = item['azerite_details']
                         else:
                             azerite = []
+                        if item['slot']['type'] in average_item_level_dict:
+                            average_item_level_dict[item['slot']['type']] = item['level']['value']
                         try:
                             obj1 = AltEquipment.objects.get(alt=alt_obj, slot=item['slot']['type'])
                             obj1.equipment = obj
@@ -261,6 +263,9 @@ def getAltData(name, realm, alt_obj):
                     print(name + '-' + realm + ' has no equipment data')
                     print(KeyError)
         response.close()
+    if average_item_level_dict['OFF_HAND'] == 0:
+        average_item_level_dict['OFF_HAND'] = average_item_level_dict['MAIN_HAND']
+    average_item_level = sum(average_item_level_dict.values()) / 16
     if alt_obj.altFaction == 'Horde':
         mage_tower = 2
     if (alt_obj.altClass != 1) and (alt_obj.altClass != 2) and (alt_obj.altClass != 6):
@@ -271,26 +276,33 @@ def getAltData(name, realm, alt_obj):
         obj.garrison = garrison + 1
         obj.mageTower = mage_tower
         obj.shadowmourne = shadowmourne
-        # obj.balance_of_power = balance_of_power
-        # obj.profession1 = getattr(AltCustom, (next(iter(current_professions[0:1] or []), 'Missing')).upper())
+        obj.average_item_level = average_item_level
         obj.profession1 = next(iter(current_professions[0:1] or []), 0)
-        # obj.profession2 = getattr(AltCustom, (next(iter(current_professions[1:2] or []), 'Missing')).upper())
         obj.profession2 = next(iter(current_professions[1:2] or []), 0)
         obj.lastRefresh = timezone.now()
         obj.save()
     except AltCustom.DoesNotExist:
-        AltCustom.objects.create(
+        obj = AltCustom.objects.create(
             alt=alt_obj,
             mount=mount,
             garrison=garrison + 1,
             mageTower=mage_tower,
             shadowmourne=shadowmourne,
-            # balance_of_power=balance_of_power,
-            # profession1=getattr(AltCustom, (next(iter(current_professions[0:1] or []), 'Missing')).upper()),
+            average_item_level=average_item_level,
             profession1=next(iter(current_professions[0:1] or []), 0),
-            # profession2=getattr(AltCustom, (next(iter(current_professions[1:2] or []), 'Missing')).upper()),
             profession2=next(iter(current_professions[1:2] or []), 0),
             lastRefresh=timezone.now(),
         )
     finally:
-        pass
+        return (obj)
+
+
+def date_diff_format(value):
+    time = timezone.now() - value
+    if time.days >= 1:
+        return (time.days + " day(s) ago")
+    elif time.seconds >= 3600:
+        return (str(int((time.seconds / 60) / 60)) + " hour(s) ago")
+    elif time.seconds >= 60:
+        return (str(int(time.seconds / 60)) + " minute(s) ago")
+    return ("Less than a minute ago")
