@@ -39,6 +39,7 @@ function ajax_refresh_character(row, name, realm) {
 
 function fetcher() {
     while (ajax_count != null && ajax_count < 1 && ajax_queue != null && ajax_queue.length && ajax_queue.length > 0) {
+        $("#ajax-test").prop('disabled', true);
         ajax_count++;
         console.log("incrementing pending ajax requests counter by 1.");
         ajax_queue.shift().call();
