@@ -312,7 +312,7 @@ def date_diff_format(value):
     else:
         time = timezone.now() - value
         if time.days >= 1:
-            return (time.days + " day(s) ago")
+            return (str(time.days) + " day(s) ago")
         elif time.seconds >= 3600:
             return (str(int((time.seconds / 60) / 60)) + " hour(s) ago")
         elif time.seconds >= 60:
