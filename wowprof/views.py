@@ -118,33 +118,19 @@ def wowProfAlts(request):
             url = 'https://eu.battle.net/oauth/authorize?client_id=' + BLIZZ_CLIENT + '&scope=wow.profile&state=blizzardeumz76c&redirect_uri=http%3A%2F%2F' + MAIN_IP + '%2Fwowprof%2Fredirect%2F&response_type=code'
             return redirect(url)
 
-        # if 'wowprof-alts-refresh-data-button' in request.POST:
-        #     if 'altId' in request.session:
-        #         django_rq.enqueue(get_alt_data_temp, request.session['altId'])
-
     alt_objects = []
     if 'altId' in request.session:
-        alt_objects = Alt.objects.select_related('altcustom').filter(pk__in=request.session['altId'])
+        alt_objects = Alt.objects.select_related('altcustom').filter(pk__in=request.session['altId']).order_by('-altLevel', '-altcustom__average_item_level')
     return render(request, "wowprof/wowprof_alts.html", {'altData': alt_objects})
 
 
-def ajax_view(request):
-    if 'altId' in request.session:
-        for alt in request.session['altId']:
-            alt_obj = Alt.objects.get(altId=alt)
-            django_rq.enqueue(getAltData, ((alt_obj.altName).replace('\'', '')).lower(), ((alt_obj.altRealm).replace('\'', '')).lower(), alt_obj)
-    context = {}
-    data = json.dumps(context)
-    return HttpResponse(data, content_type='application/json')
-
-
-def ajax_view_1(request):
+def refresh_character(request):
     name, realm = request.GET.get('name'), request.GET.get('realm')
     alt_obj = Alt.objects.get(altName=name, altRealm=realm)
     job = django_rq.enqueue(getAltData, (name.replace('\'', '')).lower(), (realm.replace('\'', '')).lower(), alt_obj)
     while not job.result:
-        time.sleep(1)
-    custom_obj = job.result
+        time.sleep(3)
+    alt_obj, custom_obj = job.result
     prof1_href = prof2_href = ''
     if custom_obj.profession1 != 0:
         prof1_href = (name.replace('\'', '')).lower() + "/" + (realm.replace('\'', '')).lower() + "/profession/" + (custom_obj.get_profession1_display()).lower()
@@ -156,7 +142,8 @@ def ajax_view_1(request):
         "prof1": custom_obj.get_profession1_display(),
         "prof2": custom_obj.get_profession2_display(),
         "prof1_href": prof1_href,
-        "prof2_href": prof2_href
+        "prof2_href": prof2_href,
+        "level": alt_obj.altLevel
     }
     data = json.dumps(context)
     return HttpResponse(data, content_type='application/json')
@@ -190,7 +177,7 @@ def wowProfAltsMoreDetails(request, name, realm):
 def wowProfChecker(request):
     alt_objects = []
     if 'altId' in request.session:
-        alt_objects = Alt.objects.select_related('altcustom').filter(pk__in=request.session['altId'])
+        alt_objects = Alt.objects.select_related('altcustom').filter(pk__in=request.session['altId']).order_by('-altLevel', '-altcustom__average_item_level')
     return render(request, 'wowprof/wowprof_checker.html', {'altData': alt_objects})
 
 

@@ -26,12 +26,6 @@ def getToken(BLIZZ_CLIENT, BLIZZ_SECRET):
     return token
 
 
-def get_alt_data_temp(alts):
-    for alt in alts:
-        alt_obj = Alt.objects.get(altId=alt)
-        getAltData(((alt_obj.altName).replace('\'', '')).lower(), ((alt_obj.altRealm).replace('\'', '')).lower(), alt_obj)
-
-
 @sleep_and_retry
 @limits(calls=100, period=SECOND)
 def getAltData(name, realm, alt_obj):
@@ -39,6 +33,7 @@ def getAltData(name, realm, alt_obj):
     client_token = getToken(BLIZZ_CLIENT, BLIZZ_SECRET)
     params = {'access_token': client_token, 'namespace': 'profile-eu', 'locale': 'en_US'}
     urls = [
+        'https://eu.api.blizzard.com/profile/wow/character/' + realm + '/' + quote(name),
         'https://eu.api.blizzard.com/profile/wow/character/' + realm + '/' + quote(name) + '/professions',
         'https://eu.api.blizzard.com/profile/wow/character/' + realm + '/' + quote(name) + '/achievements',
         'https://eu.api.blizzard.com/profile/wow/character/' + realm + '/' + quote(name) + '/quests/completed',
@@ -262,6 +257,21 @@ def getAltData(name, realm, alt_obj):
                 except KeyError:
                     print(name + '-' + realm + ' has no equipment data')
                     print(KeyError)
+            else:
+                try:
+                    data = response.json()
+                    alt_obj.altLevel = data['level']
+                    alt_obj.altName = data['name']
+                    alt_obj.altRealm = data['realm']['name']
+                    alt_obj.altRealmSlug = data['realm']['slug']
+                    alt_obj.altClass = data['character_class']['id']
+                    alt_obj.altRace = data['race']['id']
+                    alt_obj.altGender = data['gender']['name']
+                    alt_obj.altFaction = data['faction']['name']
+                    alt_obj.altExpiryDate = timezone.now() + datetime.timedelta(days=30)
+                    alt_obj.save()
+                except KeyError:
+                    print(name + '-' + realm + ' has no data')
         response.close()
     if average_item_level_dict['OFF_HAND'] == 0:
         average_item_level_dict['OFF_HAND'] = average_item_level_dict['MAIN_HAND']
@@ -293,8 +303,7 @@ def getAltData(name, realm, alt_obj):
             profession2=next(iter(current_professions[1:2] or []), 0),
             lastRefresh=timezone.now(),
         )
-    finally:
-        return (obj)
+    return (alt_obj, obj)
 
 
 def date_diff_format(value):

@@ -13,6 +13,5 @@ urlpatterns = [
     path('alts/<str:name>/<str:realm>/details', views.wowProfAltsMoreDetails, name='wowprof_alts_more'),
     path('requiem/', views.wowProfRequiem, name='wowprof_requiem'),
     path('checker/', views.wowProfChecker, name='wowprof_checker'),
-    path('test_ajax/', views.ajax_view),
-    path('test_ajax_1/', views.ajax_view_1),
+    path('refresh_character/', views.refresh_character),
 ]

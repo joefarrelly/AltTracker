@@ -1,6 +1,7 @@
 from django import template
 import datetime
 from django.utils import timezone
+from wowprof.lib.custom import date_diff_format
 
 register = template.Library()
 
@@ -22,14 +23,4 @@ def cssname(value):
 
 @register.filter(name='datediff')
 def datadiff(value):
-    if isinstance(value, str):
-        return (value)
-    else:
-        time = timezone.now() - value
-        if time.days >= 1:
-            return (str(time.days) + " day(s) ago")
-        elif time.seconds >= 3600:
-            return (str(int((time.seconds / 60) / 60)) + " hour(s) ago")
-        elif time.seconds >= 60:
-            return (str(int(time.seconds / 60)) + " minute(s) ago")
-        return ("Less than a minute ago")
+    return (date_diff_format(value))

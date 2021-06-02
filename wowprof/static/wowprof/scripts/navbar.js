@@ -1,38 +1,73 @@
+var ajax_count = (ajax_count == null ? 0: ajax_count)
+var ajax_queue = (ajax_queue == null ? []: ajax_queue);
+// var ajax_count = 0;
+// var ajax_queue = [];
+
+function ajax_refresh_character(row, name, realm) {
+    row.find('i').addClass('fa-spin');
+    console.log(name + '-' + realm);
+    console.log('doing ajax');
+    $.ajax({
+        url: "/wowprof/refresh_character/",
+        dataType: "json",
+        data: {
+            "name": name,
+            "realm": realm
+        },
+        success: function(data) {
+            row.find('i').removeClass('fa-spin');
+            row.find('td:eq(9)').html(data.last_updated);
+            row.find('td:eq(8) a').text(data.gear);
+            row.find('td:eq(6) a').text(data.prof1);
+            row.find('td:eq(7) a').text(data.prof2);
+            row.find('td:eq(2)').html(data.level);
+            row.find('button').prop('disabled', false);
+            $('#ajax-test').prop('disabled', false);
+            if (data.prof1_href == '') {
+                row.find('td:eq(6) a').removeAttr('href');
+            } else {
+                row.find('td:eq(6) a').prop('href', data.prof1_href);
+            };
+            if (data.prof2_href == '') {
+                row.find('td:eq(7) a').removeAttr('href');
+            } else {
+                row.find('td:eq(7) a').prop('href', data.prof2_href);
+            };
+        }
+    });
+}
+
+function fetcher() {
+    while (ajax_count != null && ajax_count < 1 && ajax_queue != null && ajax_queue.length && ajax_queue.length > 0) {
+        ajax_count++;
+        console.log("incrementing pending ajax requests counter by 1.");
+        ajax_queue.shift().call();
+    };
+    setTimeout(fetcher);
+}
+fetcher();
+
+$(document).ajaxComplete(function() {
+    if (ajax_count && ajax_count > 0) {
+        ajax_count--;
+        console.log("decrementing pending ajax requests counter by 1.");
+    }
+    console.log('ajax complete')
+});
+
 $(document).ready(function() {
     $("#ajax-test").on("click", function(){
         $('#alts-table td:nth-child(11) button').each(function(index) {
-            $(this).trigger('click');
+            var row = $(this).parent().parent();
+            row.find('button').prop('disabled', true);
+            ajax_queue.push(function() { ajax_refresh_character(row, row.find('td:eq(3)').text(), row.find('td:eq(4)').text()) });
         });
     });
-    $('#alts-table td:nth-child(11) button').on("click", function(){
-        var row = $(this).parent().parent()
-        row.find('i').addClass('fa-spin');
+    $('#alts-table td:nth-child(11) button').on('click', function() {
+        var row = $(this).parent().parent();
         row.find('button').prop('disabled', true);
-        $.ajax({
-            url: "/wowprof/test_ajax_1/",
-            dataType: "json",
-            data: {
-                "name": row.find('td:eq(3)').text(),
-                "realm": row.find('td:eq(4)').text()
-            },
-            success: function(data) {
-                row.find('i').removeClass('fa-spin');
-                row.find('td:eq(9)').html(data.last_updated);
-                row.find('td:eq(8) a').text(data.gear);
-                row.find('td:eq(6) a').text(data.prof1);
-                row.find('td:eq(6) a').prop('href', data.prof1_href);
-                row.find('td:eq(7) a').text(data.prof2);
-                row.find('td:eq(7) a').prop('href', data.prof2_href);
-                row.find('button').prop('disabled', false);
-                if (data.prof1_href == '') {
-                    row.find('td:eq(6) a').removeAttr('href');
-                };
-                if (data.prof2_href == '') {
-                    row.find('td:eq(7) a').removeAttr('href');
-                };
-            }
-        });
-    });
+        ajax_queue.push(function() { ajax_refresh_character(row, row.find('td:eq(3)').text(), row.find('td:eq(4)').text()) });
+    })
 });
 
 
