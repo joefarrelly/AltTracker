@@ -135,7 +135,13 @@ th, td {
 .Level3{
     background-color: #4CE87C 
 }
-.Level2, .Level1{
+.Level2{
+    background-color: #F0F035;
+} 
+.Level1{
+    background-color: #FCBA03;
+}
+.NotBuilt{
     background-color: #E74343;
 }
 
@@ -230,6 +236,11 @@ img[src=""] {
 }
 .azerite{
     color: lightblue;
+}
+
+button:disabled, input:disabled {
+  cursor: not-allowed;
+  pointer-events: all !important;
 }
 
 /*#bgtest{

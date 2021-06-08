@@ -127,6 +127,8 @@ def getAltData(name, realm, alt_obj):
                             mage_tower += 1
                         if quest['id'] == 24914:
                             shadowmourne += 1
+                        if quest['id'] == 34586:  # Only check for alliance quest as both quests get flagged as completed when done on either faction # garrison level 1, alliance(34586) and horde(34378)
+                            garrison += 1
                     try:
                         obj = AltQuestCompleted.objects.get(alt=alt_obj)
                         obj.questCompletedData = data
@@ -283,7 +285,7 @@ def getAltData(name, realm, alt_obj):
     try:
         obj = AltCustom.objects.get(alt=alt_obj)
         obj.mount = mount
-        obj.garrison = garrison + 1
+        obj.garrison = garrison
         obj.mageTower = mage_tower
         obj.shadowmourne = shadowmourne
         obj.average_item_level = average_item_level
@@ -295,7 +297,7 @@ def getAltData(name, realm, alt_obj):
         obj = AltCustom.objects.create(
             alt=alt_obj,
             mount=mount,
-            garrison=garrison + 1,
+            garrison=garrison,
             mageTower=mage_tower,
             shadowmourne=shadowmourne,
             average_item_level=average_item_level,

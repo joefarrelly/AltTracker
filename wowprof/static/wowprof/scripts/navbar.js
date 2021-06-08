@@ -119,7 +119,7 @@ $(function() {
 // garrison
 $(function() {
     $('#alts-checker-table td:nth-child(8)').each(function(index) {
-        var classColor = ['Level3','Level2', 'Level1'];
+        var classColor = ['Level3','Level2', 'Level1', 'NotBuilt'];
         var tempclassName = $(this).text();
         var className = tempclassName.replace(/\s+/g, '');
         var tempMo = $(this).parent("tr");

@@ -14,4 +14,5 @@ urlpatterns = [
     path('requiem/', views.wowProfRequiem, name='wowprof_requiem'),
     path('checker/', views.wowProfChecker, name='wowprof_checker'),
     path('refresh_character/', views.refresh_character),
+    # path('alts/export/', views.test_table, name='test_table'),
 ]
