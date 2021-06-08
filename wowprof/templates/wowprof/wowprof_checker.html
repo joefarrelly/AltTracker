@@ -7,10 +7,19 @@
 <div>
     <h2 style="text-align: center">World of Warcraft - Checker</h2>
     <div class="row" style="margin: 15px">
-        <div class="col-6">
+        <div class="col-4">
             <a href="{% url 'wowprof_home' %}" class="btn btn-secondary">FazzTools Home</a>
             <a href="{% url 'wowprof_alts' %}" class="btn btn-secondary">Alt Tracker Home</a>
-          <!--   <a href="{% url 'wowprof_checker' %}" class="btn btn-secondary">Alt Checker Home</a> -->
+        </div>
+        <div class="col-4" style="text-align: center">
+            <form method="GET">
+                <input type="hidden" name="format" value="csv">
+                <input type="hidden" name="" value="">
+                <input type="submit" value="Export to CSV" class="btn btn-secondary">
+            </form>
+        </div>
+        <div class="col-4">
+
         </div>
     </div>
     <div class="row">

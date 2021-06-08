@@ -40,7 +40,7 @@ HOST_IP = env("HOST_IP")
 # MAIN_IP=LOCAL_IP
 MAIN_IP = HOST_IP
 
-table_header = [
+alt_table_header = [
     "Faction",
     "Level",
     "Name",
@@ -48,9 +48,19 @@ table_header = [
     "Class",
     "Profession 1",
     "Profession 2",
-    "Item Level",
+    "Item Level"
+]
+
+alt_checker_table_header = [
+    "Faction",
+    "Level",
+    "Name",
+    "Realm",
+    "Class",
+    "Mount Skill",
     "Garrison",
-    "Mount Skill"
+    "Mage Tower",
+    "Shadowmourne"
 ]
 
 # def test_table(request):
@@ -149,8 +159,8 @@ def wowProfAlts(request):
             if request.GET['format'] == 'csv':
                 csv_export = []
                 for alt in alt_objects:
-                    csv_export.append([alt.altFaction, alt.altLevel, alt.altName, alt.altRealm, alt.get_altClass_display(), alt.altcustom.get_profession1_display(), alt.altcustom.get_profession2_display(), alt.altcustom.average_item_level, alt.altcustom.get_garrison_display(), alt.altcustom.get_mount_display()])
-                alt_df = pd.DataFrame(csv_export, index=list(range(1, len(csv_export) + 1)), columns=table_header)
+                    csv_export.append([alt.altFaction, alt.altLevel, alt.altName, alt.altRealm, alt.get_altClass_display(), alt.altcustom.get_profession1_display(), alt.altcustom.get_profession2_display(), alt.altcustom.average_item_level])
+                alt_df = pd.DataFrame(csv_export, index=list(range(1, len(csv_export) + 1)), columns=alt_table_header)
                 response = HttpResponse(alt_df.to_csv(index_label='Index'))
                 response['Content-Disposition'] = 'attachment; filename=alt_data.csv'
                 return response
@@ -208,10 +218,20 @@ def wowProfAltsMoreDetails(request, name, realm):
 
 
 def wowProfChecker(request):
-    alt_objects = []
-    if 'altId' in request.session:
-        alt_objects = Alt.objects.select_related('altcustom').filter(pk__in=request.session['altId']).order_by('-altLevel', '-altcustom__average_item_level')
-    return render(request, 'wowprof/wowprof_checker.html', {'altData': alt_objects})
+    if request.method == 'GET':
+        alt_objects = []
+        if 'altId' in request.session:
+            alt_objects = Alt.objects.select_related('altcustom').filter(pk__in=request.session['altId']).order_by('-altLevel', '-altcustom__average_item_level')
+        if request.GET:
+            if request.GET['format'] == 'csv':
+                csv_export = []
+                for alt in alt_objects:
+                    csv_export.append([alt.altFaction, alt.altLevel, alt.altName, alt.altRealm, alt.get_altClass_display(), alt.altcustom.get_mount_display(), alt.altcustom.get_garrison_display(), alt.altcustom.get_mageTower_display(), alt.altcustom.get_shadowmourne_display()])
+                alt_df = pd.DataFrame(csv_export, index=list(range(1, len(csv_export) + 1)), columns=alt_checker_table_header)
+                response = HttpResponse(alt_df.to_csv(index_label='Index'))
+                response['Content-Disposition'] = 'attachment; filename=alt_checker_data.csv'
+                return response
+        return render(request, 'wowprof/wowprof_checker.html', {'altData': alt_objects})
 
 
 def wowProfRequiem(request):

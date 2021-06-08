@@ -76,10 +76,7 @@ $(document).ready(function() {
 $(function() {
     $('#alts-table td:nth-child(6)').each(function(index) {
         var classColor = ['Warrior','Paladin','Hunter','Rogue','Priest','Shaman','Mage','Warlock','Monk','Druid','DemonHunter','DeathKnight'];
-        var tempclassName = $(this).text();
-        var className = tempclassName.replace(/\s+/g, '');
-        var tempMo = $(this).parent("tr");
-        var tempMo2 = tempMo[0].cells;
+        var className = ($(this).text()).replace(/\s+/g, '');
         for (var i = 0; i < classColor.length; i++) {
             if (className === classColor[i]) {
                 var counter = 0
@@ -98,10 +95,7 @@ $(function() {
 $(function() {
     $('#alts-checker-table td:nth-child(6)').each(function(index) {
         var classColor = ['Warrior','Paladin','Hunter','Rogue','Priest','Shaman','Mage','Warlock','Monk','Druid','DemonHunter','DeathKnight'];
-        var tempclassName = $(this).text();
-        var className = tempclassName.replace(/\s+/g, '');
-        var tempMo = $(this).parent("tr");
-        var tempMo2 = tempMo[0].cells;
+        var className = ($(this).text()).replace(/\s+/g, '');
         for (var i = 0; i < classColor.length; i++) {
             if (className === classColor[i]) {
                 var counter = 0
@@ -120,10 +114,7 @@ $(function() {
 $(function() {
     $('#alts-checker-table td:nth-child(8)').each(function(index) {
         var classColor = ['Level3','Level2', 'Level1', 'NotBuilt'];
-        var tempclassName = $(this).text();
-        var className = tempclassName.replace(/\s+/g, '');
-        var tempMo = $(this).parent("tr");
-        var tempMo2 = tempMo[0].cells;
+        var className = ($(this).text()).replace(/\s+/g, '');
         for (var i = 0; i < classColor.length; i++) {
             if (className === classColor[i]) {
                 var counter = 0
@@ -143,8 +134,6 @@ $(function() {
     $('#alts-checker-table td:nth-child(9)').each(function(index) {
         var classColor = ['Yes','No'];
         var className = $(this).text();
-        var tempMo = $(this).parent("tr");
-        var tempMo2 = tempMo[0].cells;
         for (var i = 0; i < classColor.length; i++) {
             if (className === classColor[i]) {
                 var counter = 0
@@ -164,8 +153,6 @@ $(function() {
     $('#alts-checker-table td:nth-child(10)').each(function(index) {
         var classColor = ['Yes','No','Quest'];
         var className = $(this).text();
-        var tempMo = $(this).parent("tr");
-        var tempMo2 = tempMo[0].cells;
         for (var i = 0; i < classColor.length; i++) {
             if (className === classColor[i]) {
                 var counter = 0
