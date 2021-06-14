@@ -60,7 +60,9 @@ alt_checker_table_header = [
     "Mount Skill",
     "Garrison",
     "Mage Tower",
-    "Shadowmourne"
+    "Shadowmourne",
+    "Location",
+    "Gold"
 ]
 
 # def test_table(request):
@@ -74,83 +76,75 @@ alt_checker_table_header = [
 
 def wowProfHome(request):
     if request.method == 'POST':
-        url = 'https://eu.battle.net/oauth/authorize?client_id=' + BLIZZ_CLIENT + '&scope=wow.profile&state=blizzardeumz76c&redirect_uri=http%3A%2F%2F' + MAIN_IP + '%2Fwowprof%2Fredirect%2F&response_type=code'
-        return redirect(url)
-    if 'code' in request.session:
-        temp2 = {
-            'code': request.session['code'],
-            'state': request.session['state'],
-        }
-    else:
-        temp2 = {
-            'code': 'N/A',
-            'state': 'N/A',
-        }
-    return render(request, "wowprof/wowprof_home.html", temp2)
+        if 'alt-tracker-button' in request.POST:
+            url = 'https://eu.battle.net/oauth/authorize?client_id=' + BLIZZ_CLIENT + '&scope=wow.profile&state=fuzzywuzzyboo32&redirect_uri=http%3A%2F%2F' + MAIN_IP + '%2Fwowprof%2Fredirect%2F&response_type=code'
+            return redirect(url)
+    if request.method == 'GET':
+        return render(request, "wowprof/wowprof_home.html")
 
 
 def wowProfRedirect(request):
     code = request.GET.get('code')
-    state = request.GET.get('state')
-
-    request.session['code'] = code
-    request.session['state'] = state
-    tempUri = 'http://' + MAIN_IP + '/wowprof/redirect/'
-    url = 'https://eu.battle.net/oauth/token?grant_type=authorization_code'
-    myobj = {'client_id': BLIZZ_CLIENT, 'client_secret': BLIZZ_SECRET, 'code': code, 'redirect_uri': tempUri}
-    x = requests.post(url, data=myobj)
-    authToken = x.json()['access_token']
-
-    request.session['authToken'] = authToken
-
-    url = "https://eu.api.blizzard.com/profile/user/wow?namespace=profile-eu&locale=en_US"
-    myobj = {'access_token': authToken}
-    y = requests.get(url, params=myobj)
-    if y.status_code == 200:
-        altId = []
-        test1 = y.json()['wow_accounts']
-        for key1 in test1:
-            test = key1['characters']
-            for key in test:
-                altId.append(key['id'])
-                try:
-                    obj = Alt.objects.get(altId=key['id'])
-                    obj.altLevel = key['level']
-                    obj.altName = key['name']
-                    obj.altRealm = key['realm']['name']
-                    obj.altRealmSlug = key['realm']['slug']
-                    obj.altClass = key['playable_class']['id']
-                    obj.altRace = key['playable_race']['id']
-                    obj.altGender = key['gender']['name']
-                    obj.altFaction = key['faction']['name']
-                    obj.altExpiryDate = timezone.now() + datetime.timedelta(days=30)
-                    obj.save()
-                except Alt.DoesNotExist:
-                    Alt.objects.create(
-                        altId=key['id'],
-                        altLevel=key['level'],
-                        altName=key['name'],
-                        altRealm=key['realm']['name'],
-                        altRealmSlug=key['realm']['slug'],
-                        altClass=key['playable_class']['id'],
-                        altRace=key['playable_race']['id'],
-                        altGender=key['gender']['name'],
-                        altFaction=key['faction']['name'],
-                        altExpiryDate=timezone.now() + datetime.timedelta(days=30)
-                    )
-        request.session['altId'] = altId
+    authToken = get_auth_token(BLIZZ_CLIENT, BLIZZ_SECRET, code)
+    request.session['auth_token'] = authToken
+    if request.GET.get('state') == 'blizzardeumz76c':
+        print('looooooooooong')
+        url = "https://eu.api.blizzard.com/profile/user/wow?namespace=profile-eu&locale=en_US"
+        myobj = {'access_token': authToken}
+        y = requests.get(url, params=myobj)
+        if y.status_code == 200:
+            altId = []
+            test1 = y.json()['wow_accounts']
+            for key1 in test1:
+                test = key1['characters']
+                for key in test:
+                    altId.append(key['id'])
+                    try:
+                        obj = Alt.objects.get(altId=key['id'])
+                        obj.altLevel = key['level']
+                        obj.altName = key['name']
+                        obj.altRealm = key['realm']['name']
+                        obj.altRealmId = key['realm']['id']
+                        obj.altRealmSlug = key['realm']['slug']
+                        obj.altClass = key['playable_class']['id']
+                        obj.altRace = key['playable_race']['id']
+                        obj.altGender = key['gender']['name']
+                        obj.altFaction = key['faction']['name']
+                        obj.altExpiryDate = timezone.now() + datetime.timedelta(days=30)
+                        obj.save()
+                    except Alt.DoesNotExist:
+                        Alt.objects.create(
+                            altId=key['id'],
+                            altLevel=key['level'],
+                            altName=key['name'],
+                            altRealm=key['realm']['name'],
+                            altRealmId=key['realm']['id'],
+                            altRealmSlug=key['realm']['slug'],
+                            altClass=key['playable_class']['id'],
+                            altRace=key['playable_race']['id'],
+                            altGender=key['gender']['name'],
+                            altFaction=key['faction']['name'],
+                            altExpiryDate=timezone.now() + datetime.timedelta(days=30)
+                        )
+            request.session['altId'] = altId
     else:
-        test = 'IT DIDNT WORK'
-        return HttpResponse(test)
-
+        print('not long')
+        # print(request.session.session_key)
     return redirect("/wowprof/alts/")
 
 
 def wowProfAlts(request):
     if request.method == 'POST':
-        if 'wowprof-alts-refresh-button' in request.POST:
+        if 'login-button' in request.POST:
             url = 'https://eu.battle.net/oauth/authorize?client_id=' + BLIZZ_CLIENT + '&scope=wow.profile&state=blizzardeumz76c&redirect_uri=http%3A%2F%2F' + MAIN_IP + '%2Fwowprof%2Fredirect%2F&response_type=code'
             return redirect(url)
+        if 'alt-tracker-home-button' in request.POST:
+            url = 'https://eu.battle.net/oauth/authorize?client_id=' + BLIZZ_CLIENT + '&scope=wow.profile&state=fuzzywuzzyboo32&redirect_uri=http%3A%2F%2F' + MAIN_IP + '%2Fwowprof%2Fredirect%2F&response_type=code'
+            return redirect(url)
+        if 'logout-button' in request.POST:
+            request.session['altId'] = []
+            request.session['auth_token'] = ''
+            return render(request, "wowprof/wowprof_alts.html")
     if request.method == 'GET':
         alt_objects = []
         if 'altId' in request.session:
@@ -169,8 +163,9 @@ def wowProfAlts(request):
 
 def refresh_character(request):
     name, realm = request.GET.get('name'), request.GET.get('realm')
+    # print(request.session['auth_token'])
     alt_obj = Alt.objects.get(altName=name, altRealm=realm)
-    job = django_rq.enqueue(getAltData, (name.replace('\'', '')).lower(), (realm.replace('\'', '')).lower(), alt_obj)
+    job = django_rq.enqueue(getAltData, (name.replace('\'', '')).lower(), (realm.replace('\'', '')).lower(), alt_obj, request.session['auth_token'])
     while not job.result:
         time.sleep(3)
     alt_obj, custom_obj = job.result
@@ -218,6 +213,10 @@ def wowProfAltsMoreDetails(request, name, realm):
 
 
 def wowProfChecker(request):
+    if request.method == 'POST':
+        if 'alt-tracker-home-button-checker' in request.POST:
+            url = 'https://eu.battle.net/oauth/authorize?client_id=' + BLIZZ_CLIENT + '&scope=wow.profile&state=fuzzywuzzyboo32&redirect_uri=http%3A%2F%2F' + MAIN_IP + '%2Fwowprof%2Fredirect%2F&response_type=code'
+            return redirect(url)
     if request.method == 'GET':
         alt_objects = []
         if 'altId' in request.session:
@@ -226,7 +225,7 @@ def wowProfChecker(request):
             if request.GET['format'] == 'csv':
                 csv_export = []
                 for alt in alt_objects:
-                    csv_export.append([alt.altFaction, alt.altLevel, alt.altName, alt.altRealm, alt.get_altClass_display(), alt.altcustom.get_mount_display(), alt.altcustom.get_garrison_display(), alt.altcustom.get_mageTower_display(), alt.altcustom.get_shadowmourne_display()])
+                    csv_export.append([alt.altFaction, alt.altLevel, alt.altName, alt.altRealm, alt.get_altClass_display(), alt.altcustom.get_mount_display(), alt.altcustom.get_garrison_display(), alt.altcustom.get_mageTower_display(), alt.altcustom.get_shadowmourne_display(), alt.altcustom.location, alt.altcustom.gold])
                 alt_df = pd.DataFrame(csv_export, index=list(range(1, len(csv_export) + 1)), columns=alt_checker_table_header)
                 response = HttpResponse(alt_df.to_csv(index_label='Index'))
                 response['Content-Disposition'] = 'attachment; filename=alt_checker_data.csv'

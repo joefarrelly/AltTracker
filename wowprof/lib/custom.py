@@ -16,23 +16,41 @@ environ.Env.read_env()
 
 BLIZZ_CLIENT = env("BLIZZ_CLIENT")
 BLIZZ_SECRET = env("BLIZZ_SECRET")
+MAIN_IP = env("HOST_IP")
+
+
+def get_auth_token(BLIZZ_CLIENT, BLIZZ_SECRET, CODE):
+    url = 'https://eu.battle.net/oauth/token?grant_type=authorization_code'
+    redirect = 'http://' + MAIN_IP + '/wowprof/redirect/'
+    params = {'client_id': BLIZZ_CLIENT, 'client_secret': BLIZZ_SECRET, 'code': CODE, 'redirect_uri': redirect}
+    x = requests.post(url, data=params)
+    try:
+        token = x.json()['access_token']
+        return token
+    except KeyError:
+        return x.text
 
 
 def getToken(BLIZZ_CLIENT, BLIZZ_SECRET):
     url = 'https://eu.battle.net/oauth/token?grant_type=client_credentials'
     myobj = {'client_id': BLIZZ_CLIENT, 'client_secret': BLIZZ_SECRET}
     x = requests.post(url, data=myobj)
-    token = x.json()['access_token']
-    return token
+    try:
+        token = x.json()['access_token']
+        return token
+    except KeyError:
+        return x.text
 
 
 @sleep_and_retry
 @limits(calls=100, period=SECOND)
-def getAltData(name, realm, alt_obj):
+def getAltData(name, realm, alt_obj, auth_token):
     print(name + '-' + realm)
     client_token = getToken(BLIZZ_CLIENT, BLIZZ_SECRET)
     params = {'access_token': client_token, 'namespace': 'profile-eu', 'locale': 'en_US'}
+    params_auth = {'access_token': auth_token, 'namespace': 'profile-eu', 'locale': 'en_US'}
     urls = [
+        'https://eu.api.blizzard.com/profile/user/wow/protected-character/' + str(alt_obj.altRealmId) + '-' + str(alt_obj.altId),
         'https://eu.api.blizzard.com/profile/wow/character/' + realm + '/' + quote(name),
         'https://eu.api.blizzard.com/profile/wow/character/' + realm + '/' + quote(name) + '/professions',
         'https://eu.api.blizzard.com/profile/wow/character/' + realm + '/' + quote(name) + '/achievements',
@@ -42,6 +60,7 @@ def getAltData(name, realm, alt_obj):
         'https://eu.api.blizzard.com/profile/wow/character/' + realm + '/' + quote(name) + '/equipment'
     ]
     mount = garrison = mage_tower = shadowmourne = average_item_level = 0
+    gold = position = ''
     current_professions = []
     average_item_level_dict = {
         "HEAD": 0,
@@ -62,7 +81,10 @@ def getAltData(name, realm, alt_obj):
         "OFF_HAND": 0,
     }
     for url in urls:
-        response = requests.get(url, params=params)
+        if 'protected-character' in url:
+            response = requests.get(url, params=params_auth)
+        else:
+            response = requests.get(url, params=params)
         if response.status_code == 200:
             if 'professions' in url:
                 try:
@@ -259,12 +281,28 @@ def getAltData(name, realm, alt_obj):
                 except KeyError:
                     print(name + '-' + realm + ' has no equipment data')
                     print(KeyError)
+            elif 'protected-character' in url:
+                try:
+                    data = response.json()
+                    try:
+                        print(data['position']['zone']['name'])
+                        position = data['position']['zone']['name']
+                    except:
+                        pass
+                    try:
+                        print(data['money'])
+                        gold = data['money']
+                    except:
+                        pass
+                except KeyError:
+                    print(name + '-' + realm + ' has no protected-character data')
             else:
                 try:
                     data = response.json()
                     alt_obj.altLevel = data['level']
                     alt_obj.altName = data['name']
                     alt_obj.altRealm = data['realm']['name']
+                    alt_obj.altRealmId = data['realm']['id']
                     alt_obj.altRealmSlug = data['realm']['slug']
                     alt_obj.altClass = data['character_class']['id']
                     alt_obj.altRace = data['race']['id']
@@ -291,6 +329,8 @@ def getAltData(name, realm, alt_obj):
         obj.average_item_level = average_item_level
         obj.profession1 = next(iter(current_professions[0:1] or []), 0)
         obj.profession2 = next(iter(current_professions[1:2] or []), 0)
+        obj.location = position
+        obj.gold = gold
         obj.lastRefresh = timezone.now()
         obj.save()
     except AltCustom.DoesNotExist:
@@ -303,6 +343,8 @@ def getAltData(name, realm, alt_obj):
             average_item_level=average_item_level,
             profession1=next(iter(current_professions[0:1] or []), 0),
             profession2=next(iter(current_professions[1:2] or []), 0),
+            location=position,
+            gold=gold,
             lastRefresh=timezone.now(),
         )
     return (alt_obj, obj)

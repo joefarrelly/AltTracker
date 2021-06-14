@@ -204,8 +204,8 @@ $(document).ready(function () {
                         $(this).siblings().removeClass('desc selected');
                         var arrData = $('table').find('tbody >tr:has(td)').get();
                         arrData.sort(function (a, b) {
-                            var val1 = $(a).children('td').eq(col).text().toUpperCase();
-                            var val2 = $(b).children('td').eq(col).text().toUpperCase();
+                            var val1 = ($(a).children('td').eq(col).text().toUpperCase()).replace(/,/g, '');
+                            var val2 = ($(b).children('td').eq(col).text().toUpperCase()).replace(/,/g, '');
                             if ($.isNumeric(val1) && $.isNumeric(val2))
                                 return sortOrder == 1 ? val1 - val2 : val2 - val1;
                             else

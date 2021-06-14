@@ -24,3 +24,11 @@ def cssname(value):
 @register.filter(name='datediff')
 def datadiff(value):
     return (date_diff_format(value))
+
+
+@register.filter(name='goldcount')
+def goldcount(value):
+    if value == '':
+        return ('---')
+    else:
+        return (f'{int(int(value) / 10000):,}')

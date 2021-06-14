@@ -9,7 +9,14 @@
     <div class="row" style="margin: 15px">
         <div class="col-4">
             <a href="{% url 'wowprof_home' %}" class="btn btn-secondary">FazzTools Home</a>
-            <a href="{% url 'wowprof_alts' %}" class="btn btn-secondary">Alt Tracker Home</a>
+            {% if request.session.altId %}
+                <form method="post" style="display: inline-block">
+                    {% csrf_token %}
+                    <input type="submit" class="btn btn-secondary" id="alt-tracker-home-button" name="alt-tracker-home-button" value="Alt Tracker Home" />
+                </form>
+            {% else %}
+                <a href="{% url 'wowprof_alts' %}" class="btn btn-secondary">Alt Tracker Home</a>
+            {% endif %}
             <a href="{% url 'wowprof_checker' %}" class="btn btn-secondary">Alt Checker</a>
         </div>
         <div class="col-4" style="text-align: center">
@@ -20,10 +27,17 @@
             </form>
         </div>
         <div class="col-4" style="text-align: right">
-            <form method="post" style="display: inline-block">
-                {% csrf_token %}
-                <input type="submit" class="btn btn-secondary" id="wowprof-alts-refresh-button" name="wowprof-alts-refresh-button" value="Sync Characters" title="Sync characters from your battle.net account" />
-            </form>
+            {% if request.session.altId %}
+                <form method="post" style="display: inline-block">
+                    {% csrf_token %}
+                    <input type="submit" class="btn btn-secondary" id="logout-button" name="logout-button" value="Logout" title="Log out of your battle.net account" />
+                </form>
+            {% else %}
+                <form method="post" style="display: inline-block">
+                    {% csrf_token %}
+                    <input type="submit" class="btn btn-secondary" id="login-button" name="login-button" value="Login" title="Login to your battle.net account" />
+                </form>
+            {% endif %}
             <input class="btn btn-secondary" type="button" id="ajax-test" name="ajax-test" value="Refresh All" title="Refresh data for all characters" />
         </div>
     </div>

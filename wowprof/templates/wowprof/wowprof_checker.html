@@ -9,7 +9,14 @@
     <div class="row" style="margin: 15px">
         <div class="col-4">
             <a href="{% url 'wowprof_home' %}" class="btn btn-secondary">FazzTools Home</a>
-            <a href="{% url 'wowprof_alts' %}" class="btn btn-secondary">Alt Tracker Home</a>
+            {% if request.session.altId %}
+                <form method="post" style="display: inline-block">
+                    {% csrf_token %}
+                    <input type="submit" class="btn btn-secondary" id="alt-tracker-home-button-checker" name="alt-tracker-home-button-checker" value="Alt Tracker Home" />
+                </form>
+            {% else %}
+                <a href="{% url 'wowprof_alts' %}" class="btn btn-secondary">Alt Tracker Home</a>
+            {% endif %}
         </div>
         <div class="col-4" style="text-align: center">
             <form method="GET">
@@ -36,6 +43,8 @@
                     <th>Garrison <i class="fas fa-sort"></th>
                     <th>MT <i class="fas fa-sort"></th>
                     <th>SM <i class="fas fa-sort"></th>
+                    <th>Location <i class="fas fa-sort"></i></th>
+                    <th>Gold <i class="fas fa-sort"></i></th>
                 </tr>
                 {% for a in altData %}
                 <tr>
@@ -53,6 +62,8 @@
                     <td>{{ a.altcustom.get_garrison_display }}</td>
                     <td>{{ a.altcustom.get_mageTower_display }}</td>
                     <td>{{ a.altcustom.get_shadowmourne_display }}</td>
+                    <td>{{ a.altcustom.location }}</td>
+                    <td>{{ a.altcustom.gold|goldcount }}</td>
                 </tr>
                 {% endfor %}
             </table>

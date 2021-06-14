@@ -9,6 +9,7 @@ class Alt(models.Model):
     altLevel = models.PositiveSmallIntegerField()
     altName = models.CharField(max_length=40)
     altRealm = models.CharField(max_length=40)
+    altRealmId = models.PositiveSmallIntegerField()
     altRealmSlug = models.CharField(max_length=40)
 
     class AltClass(models.IntegerChoices):
@@ -146,6 +147,9 @@ class AltCustom(models.Model):
         SKINNING = 393, _('Skinning')
     profession1 = models.PositiveSmallIntegerField(choices=Profession.choices, default=Profession.MISSING)
     profession2 = models.PositiveSmallIntegerField(choices=Profession.choices, default=Profession.MISSING)
+
+    location = models.CharField(max_length=100)
+    gold = models.CharField(max_length=12)
 
     lastRefresh = models.DateTimeField()
 
