@@ -67,5 +67,5 @@ Alt Tracker is an app that tracks all of a players characters in World of Warcra
 
 ## TO:DO
 
-- Export table data to CSV
+- ~~Export table data to CSV~~
 - Allow for storage of in-game keybinds for each character, potentially per spec on each character
