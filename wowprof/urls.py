@@ -13,6 +13,7 @@ urlpatterns = [
     path('alts/<str:name>/<str:realm>/details', views.wowProfAltsMoreDetails, name='wowprof_alts_more'),
     path('requiem/', views.wowProfRequiem, name='wowprof_requiem'),
     path('checker/', views.wowProfChecker, name='wowprof_checker'),
+    path('weekly/', views.wowProfWeekly, name='wowprof_weekly'),
     path('refresh_character/', views.refresh_character),
     # path('alts/export/', views.test_table, name='test_table'),
 ]

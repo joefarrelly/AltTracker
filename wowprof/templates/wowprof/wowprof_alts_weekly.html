@@ -1,0 +1,73 @@
+{% extends "home/base.html" %}
+{% block title %}WoWProf Alts
+{% endblock %}
+{% load static %}
+{% load alttracker_filters %}
+{% block content %}
+<div>
+    <h2 style="text-align: center">World of Warcraft - Weekly</h2>
+    <div class="row" style="margin: 15px">
+        <div class="col-4">
+            <a href="{% url 'wowprof_home' %}" class="btn btn-secondary">FazzTools Home</a>
+            {% if request.session.altId %}
+                <form method="post" style="display: inline-block">
+                    {% csrf_token %}
+                    <input type="submit" class="btn btn-secondary" id="alt-tracker-home-button-checker" name="alt-tracker-home-button-checker" value="Alt Tracker Home" />
+                </form>
+            {% else %}
+                <a href="{% url 'wowprof_alts' %}" class="btn btn-secondary">Alt Tracker Home</a>
+            {% endif %}
+        </div>
+        <div class="col-4" style="text-align: center">
+            <form method="GET">
+                <input type="hidden" name="format" value="csv">
+                <input type="hidden" name="" value="">
+                <input type="submit" value="Export to CSV" class="btn btn-secondary">
+            </form>
+        </div>
+        <div class="col-4">
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12" style="text-align: center">
+            <table id="alts-checker-table" style="margin:auto; text-align:center">
+                <tr>
+                    <th>#</th>
+                    <th onclick="sortTableChecker(1)"><img src="{% static 'wowprof/images/horde_alliance.png' %}" alt="Alliance and Horde faction logos" style="width:60px;height:30px"> <i class="fas fa-sort"></i></th>
+                    <th>Level <i class="fas fa-sort"></i></th>
+                    <th>Name <i class="fas fa-sort"></i></th>
+                    <th>Realm <i class="fas fa-sort"></i></th>
+                    <th>Class <i class="fas fa-sort"></i></th>
+                    <th>Mount <i class="fas fa-sort"></th>
+                    <th>Garrison <i class="fas fa-sort"></th>
+                    <th>MT <i class="fas fa-sort"></th>
+                    <th>SM <i class="fas fa-sort"></th>
+                    <th>Location <i class="fas fa-sort"></i></th>
+                    <th>Gold <i class="fas fa-sort"></i></th>
+                </tr>
+                {% for a in altData %}
+                <tr>
+                    <td>{{ a.index }}</td>
+                    {% if a.altFaction == 'Alliance' %}
+                        <td><img src="{% static 'wowprof/images/alliance.png' %}" alt="Alliance logo" style="width:30px;height:30px"></td>
+                    {% else %}
+                        <td><img src="{% static 'wowprof/images/horde.png' %}" alt="Horde logo" style="width:30px;height:30px"></td>
+                    {% endif %}
+                    <td>{{ a.altLevel }}</td>
+                    <td>{{ a.altName }}</td>
+                    <td>{{ a.altRealm }}</td>
+                    <td>{{ a.get_altClass_display }}</td>
+                    <td>{{ a.altcustom.get_mount_display }}</td>
+                    <td>{{ a.altcustom.get_garrison_display }}</td>
+                    <td>{{ a.altcustom.get_mageTower_display }}</td>
+                    <td>{{ a.altcustom.get_shadowmourne_display }}</td>
+                    <td>{{ a.altcustom.location }}</td>
+                    <td>{{ a.altcustom.gold|goldcount }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

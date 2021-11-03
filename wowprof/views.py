@@ -233,6 +233,27 @@ def wowProfChecker(request):
         return render(request, 'wowprof/wowprof_checker.html', {'altData': alt_objects})
 
 
+def wowProfWeekly(request):
+    if request.method == 'POST':
+        if 'alt-tracker-home-button-checker' in request.POST:
+            url = 'https://eu.battle.net/oauth/authorize?client_id=' + BLIZZ_CLIENT + '&scope=wow.profile&state=fuzzywuzzyboo32&redirect_uri=http%3A%2F%2F' + MAIN_IP + '%2Fwowprof%2Fredirect%2F&response_type=code'
+            return redirect(url)
+    if request.method == 'GET':
+        alt_objects = []
+        if 'altId' in request.session:
+            alt_objects = Alt.objects.select_related('altcustom').filter(pk__in=request.session['altId']).order_by('-altLevel', '-altcustom__average_item_level')
+        if request.GET:
+            if request.GET['format'] == 'csv':
+                csv_export = []
+                for alt in alt_objects:
+                    csv_export.append([alt.altFaction, alt.altLevel, alt.altName, alt.altRealm, alt.get_altClass_display(), alt.altcustom.get_mount_display(), alt.altcustom.get_garrison_display(), alt.altcustom.get_mageTower_display(), alt.altcustom.get_shadowmourne_display(), alt.altcustom.location, alt.altcustom.gold])
+                alt_df = pd.DataFrame(csv_export, index=list(range(1, len(csv_export) + 1)), columns=alt_checker_table_header)
+                response = HttpResponse(alt_df.to_csv(index_label='Index'))
+                response['Content-Disposition'] = 'attachment; filename=alt_checker_data.csv'
+                return response
+        return render(request, 'wowprof/wowprof_alts_weekly.html', {'altData': alt_objects})
+
+
 def wowProfRequiem(request):
     pass
 #     if request.method == 'POST':
